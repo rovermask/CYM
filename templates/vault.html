@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Slide Navbar</title>
+    <link rel="stylesheet" href="../static/stylesheet_vault.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+    <script>
+        function formdata() 
+        {
+            var username= document.getElementsById("txt").value;
+            var email= document.getElementsById("email").value;
+            var password= document.getElementsById("password").value;
+            // var email= document.getElementById("lastname").value;
+            // var password= document.getElementById("lastname").value;
+            console.log(username);
+            console.log(email);
+            console.log(password);
+            // console.log("<h1>Confirmation Page</h1><br>");
+            // console.log("Thank you for completing this form.<br><br>");
+            // console.log("The first name you entered is " + firstname + "<br>");
+            // console.log("The last name you entered is " + lastname);
+        }
+    </script>
+        
+</head>
+
+<body>
+    <div class="main">
+        <input type="checkbox" id="chk" aria-hidden="true">
+        <div class="signup">
+            <form>
+                <label for="chk" aria-hidden="true">Sign up</label>
+                <input type="text" id="txt" placeholder="User name" required="">
+                <input type="email" id="email" placeholder="Email" required="">
+                <input type="password" id="pswd" placeholder="Password" required="">
+                <button onclick="formData()">Sign up</button>
+            </form>
+        </div>
+        <div class="login">
+            <form>
+                <label for="chk" aria-hidden="true">Login</label>
+                <input type="email" name="email" placeholder="Email" required="">
+                <input type="password" name="pswd" placeholder="Password" required="">
+                <button>Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

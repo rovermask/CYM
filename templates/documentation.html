@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% block docTitle %}{% endblock docTitle %}
+{% endblock title %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="../static/stylesheet_docs.css">
+{% endblock stylesheet %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block body %}
+    <container id="MainContainer">
+        <div class="sidenav">
+            <a href="symmetric" >Symmetric Encryption</a>
+            <a href="asymmetric">Asymmetric Encryption</a>
+        </div>
+        <div id="MainDocs">
+            {% block MainDocs %}
+            
+            {% endblock MainDocs %}
+        </div>
+    </container>
+{% endblock body %}

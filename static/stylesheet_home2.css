@@ -1,0 +1,165 @@
+#home {
+    border: 2px solid #1f2e2e;
+}
+
+#home h6 {
+    margin-top: 80px;
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+#home p {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+#home p {
+    font-size: 23px;
+}
+
+#cia_triad {
+    margin-left: 180px;
+    margin-right: 200px;
+    font-size: 23px;
+}
+
+code {
+    margin-left: 350px;
+    margin-right: 200px;
+    font-size: 23px;
+}
+
+#cia_triad li {
+    font-weight: bold;
+}
+
+h6 {
+    display: block;
+    margin-top: 30px;
+    font-size: 50px;
+    margin-bottom: 0px;
+}
+
+h5 {
+    display: block;
+    margin-top: 30px;
+    font-size: 30px;
+    margin-bottom: 0px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+#keyIntro h6,
+p,
+h5 {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+#keySection {
+    margin-left: 200px;
+    margin-right: 200px;
+    display: flex;
+
+}
+
+#keyData {
+    height: 500px;
+    width: 50%;
+    margin-right: 1px;
+}
+
+#keyData p {
+    margin-left: 0px;
+    margin-top: 30px;
+    font-size: 23px;
+    margin-right: 2px;
+}
+
+#keyImage {
+    height: 500px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+}
+
+.docImage {
+    border-radius: 5px;
+    height: 200px;
+    width: 470px;
+}
+
+#keyData code {
+    margin-left: 140px
+}
+
+#earlyKey p {
+    font-size: 23px;
+    margin-left: 230px;
+    margin-right: 230px;
+}
+#earlyKey{
+    border: 1px solid black;
+}
+#earlyKey table {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+table {
+    border: 1px solid black;
+    font-size: 30px;
+    border-collapse: collapse;
+}
+
+
+table td {
+    text-align: center;
+}
+
+table th,
+td {
+    border: 2px solid white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+#keyFormula {
+    background-color: black;
+    text-align: center;
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#introduction {
+    font-size: 20px;
+    color: white;
+    display: block;
+    position: absolute;
+    left: 800px;
+    top: 200px;
+}
+
+nav.black {
+    background-color: #000;
+}
+
+nav ul {
+    list-style: none;
+    background-color: rgba(0, 0, 0, 0);
+    overflow: hidden;
+    color: white;
+    display: flex;
+    justify-content: center;
+}
+
+nav {
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+}

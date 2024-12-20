@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %} | CryptYourMind</title>
+    
+    {% block stylesheet %}
+    
+    {% endblock stylesheet %}
+    
+    <style>
+        {% block styles %}
+        
+        {% endblock styles %}
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+    <script>
+        {% block scripts %}
+        
+        {% endblock scripts %}
+        $(window).scroll(function () {
+            if ($(window).scrollTop()) {
+                $("nav").addClass("black");
+            }
+            else {
+                $("nav").removeClass("black");
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div id="MainHome">
+        <header>
+            <nav>
+                <div class="logo"><a href="#MainHome">CYM</a></div>
+                <div class="menu">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="symmetric">Documentation</a></li>
+                        <li><a href="examples">Examples</a></li>
+                        <li><a href="tools">Tools</a></li>
+                        <li><a href="vault">THE VAULT</a></li>
+                        <li><a href="about">About Us</a></li>
+                    </ul>
+                </div>
+            </nav>
+            {% block homebody %}{% endblock homebody %}
+            
+        </header>
+        {% block body %}{% endblock body %}
+</body>
+
+</html>

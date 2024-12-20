@@ -1,0 +1,68 @@
+{% extends 'documentation.html' %}
+
+{% block docTitle %}
+  Asymmetric
+{% endblock %}
+
+{% block MainDocs %}
+<main class="ContentSection">
+  <h3>Asymmetric-Key Encryption - Two Keys</h3>
+  <p>Two keys—a public key and a private key, which are mathematically related—are used in public-key encryption.
+      To contrast it with symmetric-key encryption, public-key encryption is also sometimes called asymmetric-key
+      encryption. In public-key encryption, the public key can be passed openly between the parties or published
+      in a public repository, but the related private key remains private. Data encrypted with the public key can
+      be decrypted only using the private key. Data encrypted with the private key can be decrypted only using the
+      public key. In the below figure, a sender has the receiver's public key and uses it to encrypt a message, but only
+      the receiver has the related private key used to decrypt the message.
+  </p>
+  <center>
+    <img src="../static/asymmetric.png" class="docImage">
+  </center>
+</main>
+<main class="ContentSection">
+  <h4>Some famous Asymmetric-Key Algorithms</h4>
+  <ul>
+    <li>
+        <h5>Rivest, Shamir, Adleman Algorithm (RSA)</h5>
+        <p>The first, and still most common,
+          PKC implementation, named for the three MIT
+          mathematicians who developed it — Ronald Rivest,
+          Adi Shamir, and Leonard Adleman. RSA today is
+          used in hundreds of software products and can be
+          used for key exchange, digital signatures, or
+          encryption of small blocks of data. RSA uses a
+          variable size encryption block and a variable size key.
+          The key-pair is derived from a very large number, n,
+          that is the product of two prime numbers chosen
+          according to special rules; these primes may be 100
+          or more digits in length each, yielding an n with
+          roughly twice as many digits as the prime factors. The
+          public key information includes n and a derivative of
+          one of the factors of n; an attacker cannot determine
+          the prime factors of n (and, therefore, the private key)
+          from this information alone and that is what makes the
+          RSA algorithm so secure. (Some descriptions of PKC
+          erroneously state that RSA's safety is due to the
+          difficulty in factoring large prime numbers. In fact,
+          large prime numbers, like small prime numbers, only
+          have two factors!) The ability for computers to factor
+          large numbers, and therefore attack schemes such as
+          RSA, is rapidly improving and systems today can find
+          the prime factors of numbers with more than 140
+          digits. The presumed protection of RSA, however, is
+          that users can easily increase the key size to always
+          stay ahead of the computer processing curve. As an
+          aside, the patent for RSA expired in September 2000
+          which does not appear to have affected RSA's
+          popularity one way or the other.
+          </p>
+          <center>
+            <img src="../static/rsa.png" class="docImage">
+          </center>
+    </li>
+
+</ul>
+</main>
+
+
+{% endblock %}

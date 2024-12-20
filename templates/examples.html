@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Examples{% endblock title %}
+
+
+{% block stylesheet %}
+<link rel="stylesheet" href="../static/stylesheet_docs.css">
+<link rel="stylesheet" href="../static/stylesheet_example2.css">
+{% endblock stylesheet %}
+
+
+
+{% block body %}
+<center>
+    <h1>Examples Of Cryptography Algorithm</h1>
+</center>
+<div class="container">
+    <div class="box" id="box1">
+        <h3>Caesar Cipher Encryption</h3>
+        <p>Text : ATTACKATONCE</p>
+        <p>Shift: 4</p>
+        <p>Cipher: EXXEGOEXSRGI</p>
+    </div>
+    <div class="box" id="box2">
+        <h3>Mono-alphabetic Encryption</h3>
+        <p>Text : Hello World</p>
+        <p>Key: Key</p>
+        <p>Cipher: AJOOS YSDOM</p>
+    </div>
+    <div class="box" id="box3">
+        <h3>Poly-alphabetic Encryption</h3>
+        <p>Text : GEEKSFORGEEKS</p>
+        <p>Key: AYUSH</p>
+        <p>Cipher: GCYCZFMLYLEIM</p>
+    </div>
+    <div class="box" id="box4">
+        <h3>DES</h3>
+        <p>Text : 123456ABCD132536</p>
+        <p>Key: AABB09182736CCDD</p>
+        <p>Cipher: C0B7A8D05F3A829C</p>
+    </div>
+    <div class="box" id="box5">
+        <h3>AES</h3>
+        <p>Text : Two One Nine Two</p>
+        <p>Key: Thats my Kung Fu</p>
+        <p>Cipher: 29C3505F571420F6402299B31A02D73A</p>
+    </div>
+    <div class="box" id="box6">
+        <h3>RSA</h3>
+        <p>Text : HI</p>
+        <p>Public Key: P=53  Q=59  n = P*Q = 3127</p>
+        <p>Private Key: 2011</p>
+        <p>Cipher: 1394</p>
+    </div>
+</div>
+{% endblock body %}

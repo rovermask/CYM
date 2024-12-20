@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="../static/stylesheet_home.css">
+{% endblock stylesheet %}
+
+
+{% block styles %}
+
+
+{% endblock styles %}
+
+
+
+
+
+{% block homebody %}
+<div id="introduction">
+    <h1>
+        CryptYourMind
+    </h1>
+</div>
+<button onclick="location.href = '#home'" id="getStarted">Get Started</button>
+{% endblock homebody %}
+
+
+
+{% block body %}
+<div class="content">
+    <section id="home">
+        <h6>
+            What is Cryptography?
+        </h6>
+        <p>
+            Cryptography is the study and practice of techniques for secure
+            communication in the presence of third parties called adversaries. It
+            deals with developing and analyzing protocols which prevents
+            malicious third parties from retrieving information being shared
+            between two entities thereby following the various aspects of
+            information security. Secure Communication refers to the scenario
+            where the message or data shared between two parties can't be
+            accessed by an adversary.
+        </p>
+        <p>
+            In Cryptography, an Adversary is a
+            malicious entity, which aims to retrieve precious information or data
+            thereby undermining the principles of information security. Data
+            Confidentiality, Data Integrity, Authentication and Non-repudiation are
+            core principles of modern-day cryptography.
+        </p>
+        <ol id="cia_triad">
+            <li>
+                Confidentiality
+            </li>
+            <dd>
+                It refers to certain rules and guidelines usually
+                executed under confidentiality agreements which ensure that the
+                information is restricted to certain people or places.
+            </dd>
+            <li>
+                Data integrity
+            </li>
+            <dd>
+                refers to maintaining and making sure that the data
+                stays accurate and consistent over its entire life cycle.
+            </dd>
+            <li>
+                Authentication
+            </li>
+            <dd>
+                It is the process of making sure that the piece of data
+                being claimed by the user belongs to it.
+            </dd>
+            <li>
+                Non-repudiation
+            </li>
+            <dd>
+                It refers to ability to make sure that a person or a
+                party associated with a contract or a communication cannot deny
+                the authenticity of their signature over their document or the
+                sending of a message.
+            </dd>
+        </ol>
+        <p>
+            <br>
+            Consider two parties Alice and Bob. Now, Alice wants to send a
+            message m to Bob over a secure channel. So, what happens is as
+            follows. The sender's message or sometimes called the Plaintext, is
+            converted into an unreadable form using a Key k. The resultant text
+            obtained is called the Ciphertext. This process is known as Encryption.
+        </p>
+        <p>
+            At the time of receival, the Ciphertext is converted back into the
+            plaintext using the same Key k, so that it can be read by the receiver.
+            This process is known as Decryption.
+        </p>
+        <code>
+            Alice (Sender) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bob (Receiver)
+        </code>
+        <br>
+        <br>
+        <code>
+            C = E (m, k) &nbsp;&nbsp;----> &nbsp;m = D (C, k) 
+        </code>
+        <br>
+        <br>
+        <br>
+        <p>
+            Here, C refers to the Ciphertext while E and D are the Encryption and
+            Decryption algorithms respectively. Let's consider the case of Caesar
+            Cipher or Shift Cipher as an example.
+        </p>
+        <p>
+            As the name suggests, in
+            Caesar Cipher each character in a word is replaced by another
+            character under some defined rules. Thus, if A is replaced by D, B by E
+            and so on. Then, each character in the word would be shifted by a
+            position of 3. For example:
+        </p>
+        <code>
+            Plaintext : helloworld
+        </code>
+        <br>
+        <br>
+        <code>
+            Ciphertext : khoorzruog
+        </code>
+    </section>
+    <br>
+    <br>
+    <br>
+    <section id="keyIntro">
+        <h6>
+            What is Key?
+        </h6>
+        <div id="keySection">
+            <div id="keyData">
+                <p>
+                    In cryptography, a key is a string of characters used within
+                    an encryption algorithm for altering data so that it appears random. Like a
+                    physical key, it locks (encrypts) data so that only someone with the right key
+                    can unlock (decrypt) it.
+                </p>
+                <p>
+                    The original data is known as the plaintext, and the data after the key encrypts
+                    it is known as the ciphertext.
+                </p>
+                <br>
+                <p id="keyFormula">
+                    The formula: <b>Plaintext + Key = Ciphertext</b>
+                    <br>
+                </p>
+            </div>
+            <div id="keyImage">
+                <div id="upperImage">
+                    <img src="../static/cryptographic-key.png" class="docImage">
+                </div>
+                <div id="lowerImage">
+                    <img src="../static/cryptographic-key-hello.png" class="docImage">
+                </div>
+            </div>
+        </div>
+        <div id="earlyKey">
+            <h5>
+                Keys in Early Forms of Encryption
+            </h5>
+            <p>
+                Before the advent of computers, ciphertext was often created by simply
+                replacing one letter with another letter in the plaintext, a method known as a
+                "substitution cipher." For instance, suppose that someone sends a message
+                reading "Hello" to another person, and each letter is replaced with the one
+                after it in the alphabet: "Hello" becomes "Ifmmp."
+            </p>
+            <table>
+                <tr>
+                    <th>Plain Text</th>
+                    <td>H</td>
+                    <td>E</td>
+                    <td>L</td>
+                    <td>L</td>
+                    <td>O</td>
+                </tr>
+                <tr>
+                    <th>Shift</th>
+                    <td>+1</td>
+                    <td>+1</td>
+                    <td>+1</td>
+                    <td>+1</td>
+                    <td>+1</td>
+                </tr>
+                <tr>
+                    <th>Cipher text</th>
+                    <td>I</td>
+                    <td>F</td>
+                    <td>M</td>
+                    <td>M</td>
+                    <td>P</td>
+                </tr>
+            </table>
+            <p>
+                "Ifmmp" looks like a nonsensical string of letters, but if someone knows the
+                key, they can substitute the proper letters and decrypt the message as "Hello."
+                For this example, the key is (letter) - 1, moving each letter down one spot in
+                the alphabet to arrive at the real letter.
+            </p>
+            <table>
+                <tr>
+                    <th>Cipher text</th>
+                    <td>I</td>
+                    <td>F</td>
+                    <td>M</td>
+                    <td>M</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <th>Shift</th>
+                    <td>-1</td>
+                    <td>-1</td>
+                    <td>-1</td>
+                    <td>-1</td>
+                    <td>-1</td>
+                </tr>
+                <tr>
+                    <th>Plain Text</th>
+                    <td>H</td>
+                    <td>E</td>
+                    <td>L</td>
+                    <td>L</td>
+                    <td>O</td>
+                </tr>
+            </table>
+            <p>
+                Such ciphers are relatively easy to break with simple statistical analysis, since
+                certain letters will appear more often than others in any given text (for
+                instance E is the most common letter in the English language). To combat this,
+                cryptographers developed a system called the one-time pad.
+            </p>
+            <p>
+                A one-time pad is a single-use-only key that has at least as many values as the
+                plaintext has characters. In other words, each letter will be replaced by a letter
+                that's a unique number of letters removed from it in the alphabet.
+            </p>
+            <p>
+                For example, suppose someone has to encrypt the message "Hello," and they
+                use a one-time pad with the values 7, 17, 24, 9, 11.
+            </p>
+            <table>
+                <tr>
+                    <th>Plain Text</th>
+                    <td>H</td>
+                    <td>E</td>
+                    <td>L</td>
+                    <td>L</td>
+                    <td>O</td>
+                </tr>
+                <tr>
+                    <th>Shift</th>
+                    <td>+7</td>
+                    <td>+17</td>
+                    <td>+24</td>
+                    <td>+9</td>
+                    <td>+11</td>
+                </tr>
+                <tr>
+                    <th style="padding-left: 40px; padding-right: 40px">Cipher text</th>
+                    <td>O</td>
+                    <td>V</td>
+                    <td>J</td>
+                    <td>U</td>
+                    <td>Z</td>
+                </tr>
+            </table>
+            <p>
+                We add 7 to the first letter, H; we add 17 to the second letter; and so on. For any
+                calculations that take us past Z, we simply go back to the beginning of the
+                alphabet and keep adding.
+                Starting from the plaintext "Hello," we now have the ciphertext "Ovjuz," using
+                the key "7, 17, 24, 9, 11."
+
+            </p>
+        </div>
+
+    </section>
+</div>
+{% endblock body %}

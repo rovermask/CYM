@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Tools{% endblock title %}
+{% block stylesheet %}<link rel="stylesheet" href="../static/stylesheet_tools.css">
+{% endblock stylesheet %}
+{% block scripts %}
+    function validateForm() {
+        var plain_text = document.forms["toolForm"]["plain_text"].value;
+        var key = document.forms["toolForm"]["key"].value;
+        var algorithm = document.forms["toolForm"]["algorithm"].value;
+        console.log("Submit Button Clicked");
+        console.log(formField);
+        alert("Name must be filled out");
+        if (plain_text != "" || key!="" || algorithm!=0) {}
+        else{
+            alert("Fill All Fields");
+            return false;
+        }
+    }
+{% endblock scripts %}
+
+{% block body %}
+<div class="container">
+    <h2>Try Our Tools</h2>
+    <form name="toolForm" action="encrypt_data" method="POST" onsubmit="return validateForm()" required>{% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="plain_text" placeholder="Enter Plain Text">
+        </div>
+        <div class="form-group">
+            <input type="text" name="key" placeholder="Enter Key">
+        </div>
+        <div class="form-group">
+            <select name="algorithm">
+                <option value="0">Choose Algorithm</option>
+                <option value="1">Caesar Cipher</option>
+                <option value="2">RSA</option>
+                <option value="3">Swapping Cipher</option>
+            </select>
+        </div>
+        <button id="submitBtn">Encrypt</button>
+    </form>
+    <h3>{{result_text}}</h3>
+</div>
+{% endblock body %}
