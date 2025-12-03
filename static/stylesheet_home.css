@@ -87,7 +87,7 @@ nav.black {
 }
 
 #introduction::after {
-    content: "Single platform for all the Geeky Crypto Nerds who are curious about cryptography and network security and want to delve deeper into the cyber world. \00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\ Get all the knowledge regarding Cryptography on a single click.";
+    content: "Single platform for all the Geeky Crypto Nerds who are curious about cryptography and network security and want to delve deeper into the cyber world. Get all the knowledge regarding Cryptography on a single click.";
 }
 
 .logo a {
@@ -267,4 +267,5 @@ td {
     position: absolute;
     left: 800px;
     top: 200px;
+
 }
