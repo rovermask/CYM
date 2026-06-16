@@ -1,50 +1,140 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <title>Slide Navbar</title>
-    <link rel="stylesheet" href="../static/stylesheet_vault.css">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
-    <script>
-        function formdata() 
-        {
-            var username= document.getElementsById("txt").value;
-            var email= document.getElementsById("email").value;
-            var password= document.getElementsById("password").value;
-            // var email= document.getElementById("lastname").value;
-            // var password= document.getElementById("lastname").value;
-            console.log(username);
-            console.log(email);
-            console.log(password);
-            // console.log("<h1>Confirmation Page</h1><br>");
-            // console.log("Thank you for completing this form.<br><br>");
-            // console.log("The first name you entered is " + firstname + "<br>");
-            // console.log("The last name you entered is " + lastname);
-        }
-    </script>
-        
-</head>
+{% block title %}The Vault{% endblock %}
 
-<body>
-    <div class="main">
-        <input type="checkbox" id="chk" aria-hidden="true">
-        <div class="signup">
-            <form>
-                <label for="chk" aria-hidden="true">Sign up</label>
-                <input type="text" id="txt" placeholder="User name" required="">
-                <input type="email" id="email" placeholder="Email" required="">
-                <input type="password" id="pswd" placeholder="Password" required="">
-                <button onclick="formData()">Sign up</button>
-            </form>
-        </div>
-        <div class="login">
-            <form>
-                <label for="chk" aria-hidden="true">Login</label>
-                <input type="email" name="email" placeholder="Email" required="">
-                <input type="password" name="pswd" placeholder="Password" required="">
-                <button>Login</button>
-            </form>
-        </div>
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_vault.css">
+{% endblock %}
+
+{% block header %}
+<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+{% endblock %}
+
+{% block body %}
+<div class="vault-page">
+  <div class="vault-container">
+
+    <!-- Icon + title -->
+    <div class="vault-icon">
+      <div class="vault-icon-ring">⬡</div>
+      <h1 class="vault-title" style="font-family:var(--font-display);">The Vault</h1>
+      <p class="vault-subtitle">Your personal encrypted space</p>
     </div>
-</body>
-</html>
+
+    <!-- Auth card -->
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="loginTab"  onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="signupTab" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <!-- Flash messages (shown above whichever form is active) -->
+      {% if messages %}
+        <div style="padding:1rem 2rem 0;">
+          {% for message in messages %}
+            <div class="vault-alert vault-alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- ── Login form ───────────────────────── -->
+      <div class="auth-panel" id="loginPanel">
+        <form method="POST" action="/vault/login">
+          {% csrf_token %}
+          <div class="vault-form-group">
+            <label for="login_email">Email Address</label>
+            <input type="email" id="login_email" name="email"
+                   placeholder="you@example.com" autocomplete="email" required>
+          </div>
+          <div class="vault-form-group">
+            <label for="login_password">Password</label>
+            <input type="password" id="login_password" name="password"
+                   placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">
+            🔓 Unlock Vault
+          </button>
+          <p style="text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--text-muted);">
+            No account?
+            <button type="button" onclick="switchTab('signup')"
+              style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.82rem;padding:0;">
+              Create one →
+            </button>
+          </p>
+        </form>
+      </div>
+
+      <!-- ── Signup form ──────────────────────── -->
+      <div class="auth-panel" id="signupPanel">
+        <form method="POST" action="/vault/register">
+          {% csrf_token %}
+          <div class="vault-form-group">
+            <label for="signup_username">Username</label>
+            <input type="text" id="signup_username" name="username"
+                   placeholder="cryptomind" autocomplete="username"
+                   minlength="3" maxlength="30" required>
+          </div>
+          <div class="vault-form-group">
+            <label for="signup_email">Email Address</label>
+            <input type="email" id="signup_email" name="email"
+                   placeholder="you@example.com" autocomplete="email" required>
+          </div>
+          <div class="vault-form-group">
+            <label for="signup_password1">Password</label>
+            <input type="password" id="signup_password1" name="password1"
+                   placeholder="Min. 8 characters" autocomplete="new-password"
+                   minlength="8" required>
+          </div>
+          <div class="vault-form-group">
+            <label for="signup_password2">Confirm Password</label>
+            <input type="password" id="signup_password2" name="password2"
+                   placeholder="Repeat password" autocomplete="new-password"
+                   minlength="8" required>
+          </div>
+          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">
+            🔐 Create Account &amp; Generate Key
+          </button>
+          <p style="text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--text-muted);">
+            Already have an account?
+            <button type="button" onclick="switchTab('login')"
+              style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.82rem;padding:0;">
+              Sign in →
+            </button>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Privacy notice -->
+    <div class="vault-notice">
+      <strong>🔐 Encryption Notice</strong><br>
+      Notes are encrypted with AES-128 (Fernet) using a per-user key derived server-side.
+      The Vault is the only non-educational feature on CryptYourMind — for personal use only.
+      Do not store highly sensitive secrets.
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const ACTIVE_TAB = '{{ active_tab }}';
+
+  function switchTab(tab) {
+    ['login','signup'].forEach(t => {
+      document.getElementById(t + 'Tab').classList.toggle('active', t === tab);
+      document.getElementById(t + 'Panel').classList.toggle('active', t === tab);
+    });
+  }
+
+  // Boot to whichever tab Django told us (login default, signup on validation error redirect)
+  switchTab(ACTIVE_TAB || 'login');
+
+  // Auto-dismiss alerts
+  document.querySelectorAll('.vault-alert').forEach(el => {
+    setTimeout(() => el.style.opacity = '0', 4000);
+    setTimeout(() => el.remove(), 4500);
+  });
+</script>
+{% endblock %}

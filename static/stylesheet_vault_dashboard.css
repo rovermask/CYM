@@ -1,0 +1,436 @@
+/* =============================================
+   CryptYourMind — Vault Dashboard Styles
+   ============================================= */
+
+/* ── Layout ────────────────────────────────── */
+.vd-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+/* ── Sidebar ───────────────────────────────── */
+.vd-sidebar {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
+/* ── User card ─────────────────────────────── */
+.vd-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.vd-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0,220,160,0.25);
+}
+.vd-username {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-bright);
+}
+.vd-email {
+  font-size: 0.78rem;
+  margin-top: 0.1rem;
+  word-break: break-all;
+}
+
+/* ── Stats row ─────────────────────────────── */
+.vd-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.vd-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  text-align: center;
+}
+.vd-stat-n {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.vd-stat-l {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Sidebar nav ───────────────────────────── */
+.vd-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.vd-nav-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.vd-nav-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--border);
+  color: var(--text-bright);
+}
+.vd-nav-btn.active {
+  background: var(--accent-dim);
+  border-color: rgba(0,220,160,0.3);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Encryption notice ─────────────────────── */
+.vd-encryption-notice {
+  background: rgba(0,220,160,0.04);
+  border: 1px solid rgba(0,220,160,0.15);
+  border-radius: var(--radius);
+  padding: 1rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.vd-encryption-notice strong {
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+}
+
+/* ── Main area ─────────────────────────────── */
+.vd-main {
+  padding: 2.5rem 2.5rem 4rem;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+/* ── Panels ────────────────────────────────── */
+.vd-panel { display: none; }
+.vd-panel.active { display: block; }
+
+.vd-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.vd-panel-header h2 { margin: 0; }
+
+/* ── Entry grid ────────────────────────────── */
+.vd-entries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Entry card ────────────────────────────── */
+.vd-entry-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.vd-entry-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.vd-entry-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.vd-entry-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 0;
+  word-break: break-word;
+  flex: 1;
+}
+
+.vd-entry-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.vd-icon-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition);
+  line-height: 1;
+}
+.vd-icon-btn:hover {
+  background: var(--bg-surface);
+  border-color: var(--border-hover);
+}
+.vd-icon-btn-danger:hover {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.4);
+}
+
+.vd-entry-preview {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+  word-break: break-word;
+}
+
+.vd-entry-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* ── Empty state ───────────────────────────── */
+.vd-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+.vd-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.vd-empty h3   { margin-bottom: 0.5rem; }
+.vd-empty p    { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+/* ── Form inside dashboard ─────────────────── */
+.vd-form { max-width: 640px; }
+.vd-form .vault-form-group textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-bright);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+  min-height: 180px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+.vd-form .vault-form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0,220,160,0.15);
+}
+.vd-char-counter {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 0.4rem;
+}
+
+/* ── Button variants ───────────────────────── */
+.vault-btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: var(--accent);
+  color: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 0 16px rgba(0,220,160,0.2);
+}
+.vault-btn:hover {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: 0 0 24px rgba(0,220,160,0.3);
+}
+.vault-btn-outline {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+  box-shadow: none;
+}
+.vault-btn-outline:hover {
+  background: var(--bg-surface);
+  color: var(--text-bright);
+  border-color: var(--border-hover);
+  box-shadow: none;
+}
+.vault-btn-danger {
+  background: rgba(239,68,68,0.9);
+  border-color: #ef4444;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(239,68,68,0.2);
+}
+.vault-btn-danger:hover {
+  background: transparent;
+  color: #ef4444;
+  border-color: #ef4444;
+}
+.vault-btn-sm {
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+}
+
+/* ── Flash alerts ──────────────────────────── */
+.vault-alert {
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: opacity 0.5s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.vault-alert::before { font-size: 1rem; }
+.vault-alert-success {
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.35);
+  color: #4ade80;
+}
+.vault-alert-success::before { content: '✓'; }
+.vault-alert-error {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.35);
+  color: #f87171;
+}
+.vault-alert-error::before { content: '✕'; }
+
+/* ── Modal ─────────────────────────────────── */
+.vd-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.vd-modal-overlay.active { display: flex; }
+
+.vd-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  animation: modalIn 0.18s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.vd-modal-sm { max-width: 420px; }
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.vd-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.vd-modal-header h3 { margin: 0; font-size: 1.1rem; }
+.vd-modal-close {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--transition);
+}
+.vd-modal-close:hover {
+  background: var(--bg-surface);
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+.vd-modal .vd-form { max-width: none; padding: 1.75rem; }
+
+/* ── Responsive ────────────────────────────── */
+@media (max-width: 900px) {
+  .vd-layout {
+    grid-template-columns: 240px 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .vd-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .vd-sidebar {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 1.25rem;
+    gap: 1.25rem;
+  }
+  .vd-main { padding: 1.5rem 1.25rem 3rem; }
+  .vd-entries-grid { grid-template-columns: 1fr; }
+}

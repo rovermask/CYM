@@ -1,141 +1,181 @@
-html,
-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+/* =============================================
+   CryptYourMind — Examples Page
+   ============================================= */
+
+/* ── Hero ──────────────────────────────────── */
+.ex-hero {
+  padding: 7rem 2rem 4rem;
+  background: linear-gradient(160deg, var(--bg-surface) 0%, var(--bg) 70%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+.ex-hero-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+.ex-hero-inner p { color: var(--text); font-size: 1.05rem; margin: 1rem 0 0; }
+
+/* ── Page wrap ─────────────────────────────── */
+.ex-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+  position: relative;
+  z-index: 1;
 }
 
-body {
-    /* color: black; */
-    color: white;
-    background-color: #1f2e2e;
-    font-family: 'Times New Roman', Times, serif;
+/* ── Tab bar ───────────────────────────────── */
+.ex-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.ex-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.65rem 1.25rem;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+.ex-tab:hover { color: var(--text); }
+.ex-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
-header {
-    width: 100%;
-    height: 10vh;
-    background-size: cover;
-    background-attachment: fixed;
+/* ── Panels ────────────────────────────────── */
+.ex-panel { display: none; }
+.ex-panel.active { display: block; }
+
+/* ── Example cards ─────────────────────────── */
+.ex-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.ex-card:hover { border-color: var(--border-hover); }
+
+.ex-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: rgba(0,220,160,0.03);
+  border-bottom: 1px solid var(--border);
+}
+.ex-card-header h3 { margin: 0 0 0.4rem; font-size: 1.1rem; }
+.ex-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.ex-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--accent);
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background var(--transition);
+}
+.ex-toggle:hover { background: var(--accent-dim); }
+
+.ex-card-body {
+  padding: 1.5rem;
 }
 
-.content {
-    width: 100%;
-    font-size: 20px;
-    text-align: justify;
+/* ── IO grid ───────────────────────────────── */
+.ex-io-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+.ex-io-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+.ex-io-box:nth-child(4) {
+  grid-column: 1;
+}
+.ex-io-box label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+}
+.ex-io-box code {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-bright);
+}
+.ex-io-cipher { border-color: rgba(0,220,160,0.3); background: rgba(0,220,160,0.04); }
+.ex-io-cipher code { color: var(--accent); }
+.ex-io-arrow {
+  font-size: 1.4rem;
+  color: var(--accent);
+  text-align: center;
+  font-weight: bold;
 }
 
-.logo {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    color: white;
-    font-weight: bold;
-    font-size: 24px;
+/* ── Steps ─────────────────────────────────── */
+.ex-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+.ex-step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.93rem;
+  color: var(--text);
+}
+.ex-step-n {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  border: 1px solid rgba(0,220,160,0.3);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
 }
 
-nav {
-    position: fixed;
-    width: 100%;
-    background-color: #000;
-    transition: 2s;
-}
-
-nav ul {
-    list-style: none;
-    background-color: rgba(0, 0, 0, 0);
-    overflow: hidden;
-    color: white;
-    display: flex;
-    justify-content: center;
-    transition: 1s;
-}
-
-nav ul li {
-    margin: 5px;
-    display: block;
-    padding: 0px 30px;
-}
-
-nav ul li a {
-    font-size: 20px;
-    color: white;
-    padding: 5px 10px;
-    text-decoration: none;
-}
-
-nav ul li a:hover {
-    border-radius: 10px;
-    color: black;
-    background-color: white;
-}
-
-
-
-#introduction {
-    font-size: 20px;
-    color: white;
-    display: block;
-    position: absolute;
-    left: 800px;
-    top: 200px;
-}
-
-#introduction h1 {
-    text-decoration: underline;
-    text-underline-offset: 10px;
-    font-family: system-ui, sans-serif;
-    font-size: 2rem;
-    color: white;
-}
-
-#introduction::after {
-    content: "Single platform for all the Geeky Crypto Nerds who are curious about cryptography and network security and want to delve deeper into the cyber world. \00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\ Get all the knowledge regarding Cryptography on a single click.";
-}
-
-.logo a {
-    font-size: 25px;
-    color: white;
-    padding: 5px 10px;
-    text-decoration: none;
-}
-
-#home,
-#documentation,
-#examples,
-#about {
-    margin-left: 30px;
-    margin-right: 30px;
-}
-
-h6 {
-    display: block;
-    margin-top: 30px;
-    font-size: 30px;
-    margin-bottom: 0px;
-}
-
-.homePara {
-    color: white;
-    font-size: 30px;
-}
-
-#getStarted {
-    background-color: transparent;
-    cursor: pointer;
-    padding: 10px 10px;
-    border-radius: 10px;
-    border: 1px solid white;
-    color: white;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 20px;
-    position: absolute;
-    top: 400px;
-    left: 800px;
-}
-
-#getStarted:hover {
-    border: 1px solid white;
-    background-color: black;
-    color: white;
+/* ── Responsive ────────────────────────────── */
+@media (max-width: 640px) {
+  .ex-io-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .ex-io-arrow { transform: rotate(90deg); justify-self: center; }
+  .ex-io-box:nth-child(4) { grid-column: auto; }
+  .ex-wrap { padding: 1.5rem 1.25rem 3rem; }
 }

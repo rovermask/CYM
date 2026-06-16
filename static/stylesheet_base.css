@@ -1,0 +1,381 @@
+/* =============================================
+   CryptYourMind — Base Design System
+   Aesthetic: Encrypted Terminal / Matrix Dark
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ── Custom Properties ─────────────────────── */
+:root {
+  --bg:           #050a0f;
+  --bg-surface:   #091422;
+  --bg-card:      #0b1826;
+  --border:       rgba(0, 220, 160, 0.12);
+  --border-hover: rgba(0, 220, 160, 0.35);
+  --accent:       #00dca0;
+  --accent-dim:   rgba(0, 220, 160, 0.15);
+  --accent-glow:  0 0 18px rgba(0, 220, 160, 0.4);
+  --accent-2:     #44aaff;
+  --accent-2-dim: rgba(68, 170, 255, 0.12);
+  --text:         #b0c8e0;
+  --text-bright:  #e0f0ff;
+  --text-muted:   #4a6880;
+  --danger:       #ff4466;
+  --warning:      #ffaa22;
+  --font-display: 'Orbitron', monospace;
+  --font-body:    'Exo 2', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --radius:       8px;
+  --radius-lg:    14px;
+  --transition:   0.25s ease;
+}
+
+/* ── Reset ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Background dot-grid texture ───────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(0, 220, 160, 0.07) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Typography ─────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--text-bright);
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 600; }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.05rem; }
+
+p { margin-bottom: 1rem; font-size: 1.05rem; }
+a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--accent-2); }
+
+code, pre {
+  font-family: var(--font-mono);
+  background: rgba(0, 220, 160, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+code { padding: 0.1em 0.5em; }
+pre  { padding: 1rem 1.5rem; overflow-x: auto; }
+
+/* ── Navigation ─────────────────────────────── */
+#mainNav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: transparent;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+#mainNav.scrolled {
+  background: rgba(5, 10, 15, 0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.5);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--accent) !important;
+  letter-spacing: 0.08em;
+  text-shadow: var(--accent-glow);
+}
+.nav-logo .bracket { color: var(--text-muted); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 0.25rem;
+}
+.nav-links li { position: relative; }
+.nav-links a {
+  display: block;
+  padding: 0.5rem 0.85rem;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  transition: color var(--transition), background var(--transition);
+}
+.nav-links a:hover {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+.nav-links .vault-link {
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+.nav-links .vault-link:hover {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  box-shadow: var(--accent-glow);
+}
+
+/* Dropdown */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 180px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  list-style: none;
+  overflow: hidden;
+}
+.dropdown-menu a {
+  border-radius: 0;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+}
+.dropdown:hover .dropdown-menu { display: block; }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ── Cards ──────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 0 24px rgba(0, 220, 160, 0.08);
+}
+
+/* ── Accent utilities ───────────────────────── */
+.accent   { color: var(--accent); }
+.accent-2 { color: var(--accent-2); }
+.muted    { color: var(--text-muted); }
+.mono     { font-family: var(--font-mono); }
+
+/* ── Buttons ────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 16px rgba(0, 220, 160, 0.3);
+}
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: var(--accent-glow);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--border-hover);
+}
+.btn-outline:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+}
+
+/* ── Section layouts ────────────────────────── */
+.section {
+  padding: 5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.section-sm { padding: 3rem 2rem; }
+.page-wrap   { max-width: 1100px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+/* ── Section heading style ──────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  margin-bottom: 1rem;
+}
+.section-title .highlight {
+  color: var(--accent);
+}
+
+/* ── Tables ─────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+th {
+  background: rgba(0, 220, 160, 0.1);
+  color: var(--accent);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+tr:hover td { background: rgba(0, 220, 160, 0.04); }
+
+/* ── Divider ────────────────────────────────── */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+  margin: 2.5rem 0;
+}
+
+/* ── Badge ──────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.badge-green  { background: rgba(0, 220, 160, 0.15); color: var(--accent); border: 1px solid rgba(0,220,160,0.3); }
+.badge-blue   { background: rgba(68, 170, 255, 0.15); color: var(--accent-2); border: 1px solid rgba(68,170,255,0.3); }
+.badge-yellow { background: rgba(255, 170, 34, 0.15); color: var(--warning); border: 1px solid rgba(255,170,34,0.3); }
+.badge-red    { background: rgba(255, 68, 102, 0.15); color: var(--danger); border: 1px solid rgba(255,68,102,0.3); }
+
+/* ── Footer ─────────────────────────────────── */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 768px) {
+  #mainNav { padding: 0 1rem; }
+  .nav-toggle { display: flex; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    flex-direction: column;
+    background: rgba(9, 20, 34, 0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    gap: 0.25rem;
+  }
+  .nav-links.open { display: flex; }
+  .dropdown-menu {
+    position: static;
+    display: none;
+    box-shadow: none;
+    background: var(--bg-surface);
+    margin-top: 0.25rem;
+    margin-left: 1rem;
+  }
+  .dropdown.open .dropdown-menu { display: block; }
+  .section { padding: 3rem 1.25rem; }
+}
+/* ── Active nav link ─────────────────────────── */
+.nav-links a.nav-active {
+  color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.nav-links .vault-link.nav-active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  box-shadow: var(--accent-glow);
+}
+
+/* ── Footer nav ──────────────────────────────── */
+.footer-inner { max-width: 960px; margin: 0 auto; }
+.footer-nav {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.footer-nav a {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.footer-nav a:hover { color: var(--accent); }

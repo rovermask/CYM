@@ -1,89 +1,210 @@
-body{
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 100vh;
-	font-family: 'Jost', sans-serif;
-	background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-}
-.main{
-	width: 350px;
-	height: 500px;
-	overflow: hidden;
-	background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
-	border-radius: 10px;
-	box-shadow: 5px 20px 50px #000;
-}
-#chk{
-	display: none;
-}
-.signup{
-	position: relative;
-	width:100%;
-	height: 100%;
-}
-label{
-	color: #fff;
-	font-size: 2.3em;
-	justify-content: center;
-	display: flex;
-	margin: 60px;
-	font-weight: bold;
-	cursor: pointer;
-	transition: .5s ease-in-out;
-}
-input{
-	width: 60%;
-	height: 20px;
-	background: #e0dede;
-	justify-content: center;
-	display: flex;
-	margin: 20px auto;
-	padding: 10px;
-	border: none;
-	outline: none;
-	border-radius: 5px;
-}
-button{
-	width: 60%;
-	height: 40px;
-	margin: 10px auto;
-	justify-content: center;
-	display: block;
-	color: #fff;
-	background: #573b8a;
-	font-size: 1em;
-	font-weight: bold;
-	margin-top: 20px;
-	outline: none;
-	border: none;
-	border-radius: 5px;
-	transition: .2s ease-in;
-	cursor: pointer;
-}
-button:hover{
-	background: #6d44b8;
-}
-.login{
-	height: 460px;
-	background: #eee;
-	border-radius: 60% / 10%;
-	transform: translateY(-180px);
-	transition: .8s ease-in-out;
-}
-.login label{
-	color: #573b8a;
-	transform: scale(.6);
+/* ── Vault Page Styles ───────────────────────── */
+
+.vault-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem 4rem;
+  position: relative;
+  z-index: 1;
 }
 
-#chk:checked ~ .login{
-	transform: translateY(-500px);
+/* Glow background for vault */
+.vault-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0, 220, 160, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
-#chk:checked ~ .login label{
-	transform: scale(1);	
+
+.vault-container {
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
 }
-#chk:checked ~ .signup label{
-	transform: scale(.6);
+
+/* Vault lock icon */
+.vault-icon {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.vault-icon-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 220, 160, 0.3);
+  background: rgba(0, 220, 160, 0.05);
+  font-size: 2rem;
+  box-shadow: 0 0 30px rgba(0, 220, 160, 0.1);
+  animation: vaultPulse 3s ease-in-out infinite;
+}
+.vault-title {
+  margin-top: 1rem;
+  font-size: 1.6rem;
+  color: var(--text-bright);
+}
+.vault-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* Auth card */
+.auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* Tab switcher */
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.auth-tab {
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  transition: all var(--transition);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.auth-tab:hover { color: var(--text); }
+.auth-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(0,220,160,0.04);
+}
+
+/* Auth forms */
+.auth-panel { display: none; padding: 2rem; }
+.auth-panel.active { display: block; }
+
+.vault-form-group {
+  margin-bottom: 1.1rem;
+}
+.vault-form-group label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.vault-form-group input {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-bright);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.7rem 1rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+.vault-form-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0, 220, 160, 0.15);
+}
+.vault-form-group input::placeholder { color: var(--text-muted); }
+
+.vault-btn {
+  width: 100%;
+  padding: 0.85rem;
+  margin-top: 0.5rem;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 0 20px rgba(0, 220, 160, 0.25);
+}
+.vault-btn:hover {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 30px rgba(0, 220, 160, 0.35);
+}
+
+/* Vault info notice */
+.vault-notice {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 220, 160, 0.05);
+  border: 1px solid rgba(0, 220, 160, 0.15);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+.vault-notice strong { color: var(--accent); }
+
+@keyframes vaultPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 220, 160, 0.1); }
+  50%       { box-shadow: 0 0 40px rgba(0, 220, 160, 0.25); }
+}
+/* ── Additional vault auth styles ─────────────────────────── */
+
+/* Error box (legacy — kept for compatibility) */
+.error-box {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: var(--radius);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+}
+
+/* Flash alerts on auth page */
+.vault-alert {
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: opacity 0.5s ease;
+}
+.vault-alert-success {
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.35);
+  color: #4ade80;
+}
+.vault-alert-error {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.35);
+  color: #f87171;
+}
+
+/* Fix: auth form padding */
+.auth-panel { padding: 1.75rem 2rem; }
+
+/* Vault btn — fix layout shift on hover by always reserving border width */
+.vault-btn {
+  box-sizing: border-box;
 }

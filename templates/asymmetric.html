@@ -1,68 +1,478 @@
-{% extends 'documentation.html' %}
+{% extends 'base.html' %}
 
-{% block docTitle %}
-  Asymmetric
+{% block title %}Asymmetric Encryption{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_docs.css">
 {% endblock %}
 
-{% block MainDocs %}
-<main class="ContentSection">
-  <h3>Asymmetric-Key Encryption - Two Keys</h3>
-  <p>Two keys—a public key and a private key, which are mathematically related—are used in public-key encryption.
-      To contrast it with symmetric-key encryption, public-key encryption is also sometimes called asymmetric-key
-      encryption. In public-key encryption, the public key can be passed openly between the parties or published
-      in a public repository, but the related private key remains private. Data encrypted with the public key can
-      be decrypted only using the private key. Data encrypted with the private key can be decrypted only using the
-      public key. In the below figure, a sender has the receiver's public key and uses it to encrypt a message, but only
-      the receiver has the related private key used to decrypt the message.
-  </p>
-  <center>
-    <img src="../static/asymmetric.png" class="docImage">
-  </center>
-</main>
-<main class="ContentSection">
-  <h4>Some famous Asymmetric-Key Algorithms</h4>
-  <ul>
-    <li>
-        <h5>Rivest, Shamir, Adleman Algorithm (RSA)</h5>
-        <p>The first, and still most common,
-          PKC implementation, named for the three MIT
-          mathematicians who developed it — Ronald Rivest,
-          Adi Shamir, and Leonard Adleman. RSA today is
-          used in hundreds of software products and can be
-          used for key exchange, digital signatures, or
-          encryption of small blocks of data. RSA uses a
-          variable size encryption block and a variable size key.
-          The key-pair is derived from a very large number, n,
-          that is the product of two prime numbers chosen
-          according to special rules; these primes may be 100
-          or more digits in length each, yielding an n with
-          roughly twice as many digits as the prime factors. The
-          public key information includes n and a derivative of
-          one of the factors of n; an attacker cannot determine
-          the prime factors of n (and, therefore, the private key)
-          from this information alone and that is what makes the
-          RSA algorithm so secure. (Some descriptions of PKC
-          erroneously state that RSA's safety is due to the
-          difficulty in factoring large prime numbers. In fact,
-          large prime numbers, like small prime numbers, only
-          have two factors!) The ability for computers to factor
-          large numbers, and therefore attack schemes such as
-          RSA, is rapidly improving and systems today can find
-          the prime factors of numbers with more than 140
-          digits. The presumed protection of RSA, however, is
-          that users can easily increase the key size to always
-          stay ahead of the computer processing curve. As an
-          aside, the patent for RSA expired in September 2000
-          which does not appear to have affected RSA's
-          popularity one way or the other.
-          </p>
-          <center>
-            <img src="../static/rsa.png" class="docImage">
-          </center>
-    </li>
+{% block header %}
+<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+{% endblock %}
 
-</ul>
-</main>
+{% block body %}
+<div class="docs-layout">
 
+  <!-- Sidebar -->
+  <nav class="docs-sidebar">
+    <h6>Documentation</h6>
+    <a href="/symmetric">Symmetric</a>
+    <a href="/asymmetric" class="active">Asymmetric</a>
 
+    <h6>Asymmetric Algorithms</h6>
+    <a href="#rsa"  class="sub-link">RSA</a>
+    <a href="#ecc"  class="sub-link">ECC</a>
+    <a href="#dh"   class="sub-link">Diffie-Hellman</a>
+    <a href="#elgamal" class="sub-link">ElGamal</a>
+    <a href="#dsa"  class="sub-link">DSA</a>
+    <a href="#ecdsa" class="sub-link">ECDSA</a>
+    <a href="#ed25519" class="sub-link">Ed25519</a>
+    <a href="#ecdh" class="sub-link">ECDH</a>
+    <a href="#pgp"  class="sub-link">PGP / GPG</a>
+    <a href="#paillier" class="sub-link">Paillier</a>
+
+    <h6>Quick Links</h6>
+    <a href="/tools" class="sub-link">↗ Try the Tools</a>
+    <a href="/examples" class="sub-link">↗ Examples</a>
+  </nav>
+
+  <!-- Main content -->
+  <article class="docs-content">
+
+    <div class="docs-page-header">
+      <p class="section-label">// Asymmetric Encryption</p>
+      <h1>Two Keys, <span style="color:var(--accent)">Public &amp; Private</span></h1>
+      <p class="lead">
+        Asymmetric (public-key) cryptography uses mathematically related key pairs.
+        What one key encrypts, only the other can decrypt — enabling secure communication
+        without ever sharing a secret key.
+      </p>
+    </div>
+
+    <div class="algo-image">
+      <img src="/static/asymmetric.png" alt="Asymmetric encryption diagram">
+    </div>
+
+    <div class="algo-stats" style="margin-top:1.5rem;">
+      <div class="algo-stat"><label>Key Type</label><value>Public + Private Pair</value></div>
+      <div class="algo-stat"><label>Speed</label><value>Slower than Symmetric</value></div>
+      <div class="algo-stat"><label>Key Distribution</label><value>Public key is shareable</value></div>
+      <div class="algo-stat"><label>Best Use Case</label><value>Key Exchange, Signatures</value></div>
+    </div>
+
+    <div class="docs-divider"><span>Algorithms</span></div>
+
+    <!-- RSA -->
+    <div class="algo-card" id="rsa">
+      <div class="algo-card-header">
+        <h3>RSA — Rivest-Shamir-Adleman</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Widely Used</span>
+          <span class="badge badge-blue">Encryption + Signatures</span>
+        </div>
+      </div>
+      <p>
+        RSA, invented in 1977 by Ron Rivest, Adi Shamir, and Leonard Adleman at MIT, was the
+        first practical public-key cryptosystem. Its security is based on the computational
+        difficulty of factoring the product of two large prime numbers. RSA is used for key
+        exchange, digital signatures, and encrypting small amounts of data.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Key Sizes</label><value>1024–4096 bits (2048+ recommended)</value></div>
+        <div class="algo-stat"><label>Security Basis</label><value>Integer Factorization</value></div>
+        <div class="algo-stat"><label>Published</label><value>1977</value></div>
+        <div class="algo-stat"><label>Patent Expired</label><value>2000</value></div>
+      </div>
+      <div class="algo-image"><img src="/static/rsa.png" alt="RSA diagram"></div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">Key Generation Steps</h5>
+      <ol class="algo-steps">
+        <li>Choose two distinct large prime numbers <strong>p</strong> and <strong>q</strong>.</li>
+        <li>Compute <strong>n = p × q</strong> (the modulus). n is part of both public and private keys.</li>
+        <li>Compute Euler's totient: <strong>φ(n) = (p−1)(q−1)</strong>.</li>
+        <li>Choose public exponent <strong>e</strong> such that 1 &lt; e &lt; φ(n) and gcd(e, φ(n)) = 1.</li>
+        <li>Compute private exponent <strong>d</strong> such that d·e ≡ 1 (mod φ(n)).</li>
+        <li>Public key: <strong>(e, n)</strong> — Private key: <strong>(d, n)</strong>.</li>
+      </ol>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>rsa_math</span></div>
+        <pre>
+<span class="cmt"># Encryption  (anyone with public key can encrypt)</span>
+<span class="kw">C</span> = M<sup>e</sup> mod n
+
+<span class="cmt"># Decryption  (only private key holder can decrypt)</span>
+<span class="kw">M</span> = C<sup>d</sup> mod n
+
+<span class="cmt"># Example: p=53, q=59, n=3127, e=3, d=2011</span>
+<span class="cmt"># Encrypt M=89: C = 89³ mod 3127 = 1394</span>
+<span class="cmt"># Decrypt C=1394: M = 1394²⁰¹¹ mod 3127 = 89 ✓</span>
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        <strong>Real-world usage:</strong> TLS/HTTPS handshake (key exchange), SSH authentication,
+        PGP/GPG email encryption, digital certificates (X.509), code signing.
+      </p>
+    </div>
+
+    <!-- ECC -->
+    <div class="algo-card" id="ecc">
+      <div class="algo-card-header">
+        <h3>ECC — Elliptic Curve Cryptography</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Modern</span>
+          <span class="badge badge-green">Efficient</span>
+          <span class="badge badge-blue">Key Exchange + Signatures</span>
+        </div>
+      </div>
+      <p>
+        ECC is based on the algebraic structure of elliptic curves over finite fields. It provides
+        the same security as RSA but with much smaller key sizes — a 256-bit ECC key offers
+        equivalent security to a 3072-bit RSA key. This makes ECC ideal for mobile and IoT devices
+        where computational resources are limited.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Key Size</label><value>256 bits ≈ RSA-3072</value></div>
+        <div class="algo-stat"><label>Security Basis</label><value>Elliptic Curve DLP</value></div>
+        <div class="algo-stat"><label>Common Curves</label><value>P-256, P-384, Curve25519</value></div>
+        <div class="algo-stat"><label>Used In</label><value>TLS 1.3, Bitcoin, Signal</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>ecc_curve_equation</span></div>
+        <pre>
+<span class="cmt"># General Weierstrass form of an elliptic curve:</span>
+<span class="kw">y²</span> = x³ + ax + b   (mod p)
+
+<span class="cmt"># secp256k1 (used by Bitcoin):</span>
+<span class="kw">y²</span> = x³ + 7   (mod p)   <span class="cmt">where a=0, b=7</span>
+
+<span class="cmt"># Key generation: choose private key d (random int)</span>
+<span class="cmt"># Public key Q = d × G  (G = generator point)</span>
+<span class="cmt"># Recovering d from Q requires solving ECDLP — computationally infeasible</span>
+        </pre>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">Point Operations</h5>
+      <ol class="algo-steps">
+        <li><strong>Point Addition:</strong> Two points P and Q on the curve yield a third point P+Q.</li>
+        <li><strong>Point Doubling:</strong> P + P = 2P using the tangent at P.</li>
+        <li><strong>Scalar Multiplication:</strong> k × P = P + P + ... + P (k times) — the hard problem for security.</li>
+        <li>The Elliptic Curve Discrete Logarithm Problem (ECDLP): given Q and G, find k such that Q = k×G.</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        <strong>Real-world usage:</strong> TLS 1.3 (mandatory), Bitcoin/Ethereum wallets (secp256k1),
+        Signal Protocol (Curve25519), Apple Secure Enclave, Google's ALTS.
+      </p>
+    </div>
+
+    <!-- Diffie-Hellman -->
+    <div class="algo-card" id="dh">
+      <div class="algo-card-header">
+        <h3>Diffie-Hellman Key Exchange</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Foundational</span>
+          <span class="badge badge-blue">Key Exchange Only</span>
+        </div>
+      </div>
+      <p>
+        Diffie-Hellman (1976) was the first public-key protocol and is still conceptually central
+        to modern cryptography. It allows two parties to establish a shared secret over an insecure
+        channel without ever transmitting the secret itself. DH is not used for encryption or
+        signatures — only for key agreement.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Security Basis</label><value>Discrete Logarithm Problem</value></div>
+        <div class="algo-stat"><label>Published</label><value>1976 (Diffie &amp; Hellman)</value></div>
+        <div class="algo-stat"><label>Purpose</label><value>Key Exchange Only</value></div>
+        <div class="algo-stat"><label>Modern Version</label><value>ECDH (Elliptic Curve DH)</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>dh_key_exchange</span></div>
+        <pre>
+<span class="cmt"># Public parameters (known to everyone): prime p, generator g</span>
+<span class="kw">p</span> = 23,  <span class="kw">g</span> = 5
+
+<span class="cmt"># Alice chooses private key a=6, computes public key:</span>
+<span class="kw">A</span> = g<sup>a</sup> mod p  →  5⁶ mod 23  =  8   <span class="cmt">(Alice sends 8 to Bob)</span>
+
+<span class="cmt"># Bob chooses private key b=15, computes public key:</span>
+<span class="kw">B</span> = g<sup>b</sup> mod p  →  5¹⁵ mod 23 = 19  <span class="cmt">(Bob sends 19 to Alice)</span>
+
+<span class="cmt"># Shared secret:</span>
+<span class="kw">Alice:</span> s = B<sup>a</sup> mod p  = 19⁶ mod 23  = <span class="num">2</span>
+<span class="kw">Bob  :</span> s = A<sup>b</sup> mod p  = 8¹⁵ mod 23  = <span class="num">2</span>  ✓
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        An eavesdropper sees g, p, A, and B — but cannot compute the shared secret without
+        solving the Discrete Logarithm Problem. <strong>ECDH</strong> (Elliptic Curve DH) 
+        is the modern, more efficient version used in TLS 1.3.
+      </p>
+    </div>
+
+    <!-- ElGamal -->
+    <div class="algo-card" id="elgamal">
+      <div class="algo-card-header">
+        <h3>ElGamal Encryption</h3>
+        <div class="algo-badges">
+          <span class="badge badge-yellow">Academic / PGP</span>
+          <span class="badge badge-blue">Encryption + Signatures</span>
+        </div>
+      </div>
+      <p>
+        The ElGamal cryptosystem (1985, Taher ElGamal) is based on the Diffie-Hellman key exchange.
+        Unlike RSA, ElGamal produces ciphertexts that are twice the size of the plaintext (it is
+        probabilistic — the same plaintext encrypted twice yields different ciphertexts). This
+        property provides semantic security. ElGamal is used in PGP/GPG for asymmetric encryption.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Security Basis</label><value>Discrete Logarithm Problem</value></div>
+        <div class="algo-stat"><label>Type</label><value>Probabilistic Cipher</value></div>
+        <div class="algo-stat"><label>Published</label><value>1985</value></div>
+        <div class="algo-stat"><label>Used In</label><value>PGP/GPG, GnuPG</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>elgamal_steps</span></div>
+        <pre>
+<span class="cmt"># Key Generation</span>
+<span class="kw">p</span> = large prime,  <span class="kw">g</span> = generator,  <span class="kw">x</span> = private key
+<span class="kw">h</span> = g<sup>x</sup> mod p          <span class="cmt">(public key = (p, g, h))</span>
+
+<span class="cmt"># Encryption of message M:</span>
+choose random <span class="kw">k</span>
+<span class="kw">c₁</span> = g<sup>k</sup> mod p
+<span class="kw">c₂</span> = M × h<sup>k</sup> mod p     <span class="cmt">(ciphertext = (c₁, c₂))</span>
+
+<span class="cmt"># Decryption:</span>
+<span class="kw">M</span>  = c₂ × (c₁<sup>x</sup>)<sup>-1</sup> mod p
+        </pre>
+      </div>
+    </div>
+
+    <!-- DSA -->
+    <div class="algo-card" id="dsa">
+      <div class="algo-card-header">
+        <h3>DSA — Digital Signature Algorithm</h3>
+        <div class="algo-badges">
+          <span class="badge badge-yellow">Signatures Only</span>
+          <span class="badge badge-blue">NIST Standard</span>
+        </div>
+      </div>
+      <p>
+        DSA is a US Federal Information Processing Standard (FIPS 186) for digital signatures,
+        proposed by NIST in 1991. It is a variant of ElGamal that provides digital signatures
+        but not encryption. Unlike RSA, DSA can only sign — it cannot encrypt data. DSA requires
+        a random number (nonce k) for each signature; reusing k leaks the private key.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Purpose</label><value>Signatures Only</value></div>
+        <div class="algo-stat"><label>Security Basis</label><value>Discrete Logarithm Problem</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>1024–3072 bits</value></div>
+        <div class="algo-stat"><label>Status</label><value>Being replaced by ECDSA</value></div>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        A critical vulnerability: if the nonce k is ever reused or predictable, the private key
+        can be extracted. This is exactly how the PlayStation 3's master private key was recovered
+        in 2010 — Sony used a constant k.
+      </p>
+    </div>
+
+    <!-- ECDSA -->
+    <div class="algo-card" id="ecdsa">
+      <div class="algo-card-header">
+        <h3>ECDSA — Elliptic Curve DSA</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Modern Standard</span>
+          <span class="badge badge-blue">Signatures Only</span>
+        </div>
+      </div>
+      <p>
+        ECDSA is the elliptic-curve variant of DSA, offering the same security with much shorter
+        keys. It is widely adopted in TLS certificates, SSH authentication, code signing,
+        and blockchain transactions (Bitcoin uses secp256k1-based ECDSA for transaction signing).
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Key Size</label><value>256 bits ≈ RSA-3072</value></div>
+        <div class="algo-stat"><label>Security Basis</label><value>ECDLP</value></div>
+        <div class="algo-stat"><label>Used In</label><value>TLS, SSH, Bitcoin, JWT (ES256)</value></div>
+        <div class="algo-stat"><label>Safer Alt.</label><value>EdDSA (Ed25519) — no nonce issue</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>ecdsa_vs_eddsa</span></div>
+        <pre>
+<span class="cmt"># ECDSA: requires random nonce k per signature</span>
+<span class="cmt"># Reusing k → private key leak (same as DSA)</span>
+
+<span class="cmt"># EdDSA (Ed25519): deterministic — k derived from message</span>
+<span class="cmt"># No random nonce needed → safer in practice</span>
+<span class="cmt"># Used by: OpenSSH, Signal, ProtonMail, Tor</span>
+        </pre>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <!-- ED25519 -->
+    </div>
+
+    <!-- Ed25519 -->
+    <div class="docs-divider"><span>Modern Algorithms</span></div>
+
+    <div class="algo-card" id="ed25519">
+      <div class="algo-card-header">
+        <h3>Ed25519 — Edwards-curve Digital Signature Algorithm</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Modern</span>
+          <span class="badge badge-green">Fast & Compact</span>
+          <span class="badge badge-blue">Signatures Only</span>
+        </div>
+      </div>
+      <p>
+        Ed25519 is an elliptic-curve digital signature scheme using the twisted Edwards curve
+        Curve25519, designed by Daniel J. Bernstein. It produces 64-byte signatures from a
+        32-byte key and is widely considered the most practical signing algorithm available —
+        deterministic (no random nonce required), extremely fast, and immune to several classes
+        of side-channel attacks that plague ECDSA.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Private Key</label><value>32 bytes (256 bits)</value></div>
+        <div class="algo-stat"><label>Public Key</label><value>32 bytes</value></div>
+        <div class="algo-stat"><label>Signature Size</label><value>64 bytes</value></div>
+        <div class="algo-stat"><label>Security Level</label><value>~128-bit equivalent</value></div>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">Why Ed25519 over ECDSA?</h5>
+      <ol class="algo-steps">
+        <li><strong>Deterministic</strong>: The nonce is derived deterministically from the key and message, eliminating random number generator failures that have catastrophically broken ECDSA deployments.</li>
+        <li><strong>No cofactor pitfalls</strong>: Twisted Edwards curves have complete addition formulas — no special cases for point-at-infinity.</li>
+        <li><strong>Speed</strong>: Signing and verification are extremely fast, roughly 2–3× faster than RSA-2048 signing.</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        Used in: <strong>OpenSSH</strong> (default key type), <strong>Signal Protocol</strong>,
+        <strong>Tor</strong>, <strong>age</strong> file encryption, <strong>WireGuard</strong>,
+        and most modern TLS certificate authorities.
+      </p>
+    </div>
+
+    <!-- ECDH -->
+    <div class="algo-card" id="ecdh">
+      <div class="algo-card-header">
+        <h3>ECDH — Elliptic Curve Diffie-Hellman</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Modern</span>
+          <span class="badge badge-blue">Key Exchange</span>
+          <span class="badge badge-green">Efficient</span>
+        </div>
+      </div>
+      <p>
+        ECDH is the elliptic-curve variant of the Diffie-Hellman key exchange. It allows two
+        parties to agree on a shared secret using only their own private key and the other party's
+        public key, with no pre-shared secret. Because ECC provides equivalent security to RSA
+        with much shorter keys, ECDH dramatically reduces communication overhead.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Most Used Curve</label><value>X25519 (Curve25519)</value></div>
+        <div class="algo-stat"><label>Key Size (X25519)</label><value>32 bytes</value></div>
+        <div class="algo-stat"><label>TLS Usage</label><value>TLS 1.3 default</value></div>
+        <div class="algo-stat"><label>RSA Equivalent</label><value>256-bit ECC ≈ 3072-bit RSA</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>ecdh_key_exchange</span></div>
+        <pre>
+<span class="cmt"># ECDH Key Exchange (conceptual)</span>
+<span class="kw">Alice</span>: private_a, public_A = a * G   <span class="cmt">(G = curve base point)</span>
+<span class="kw">Bob</span>:   private_b, public_B = b * G
+
+<span class="cmt"># Exchange public keys (A, B are safe to send openly)</span>
+<span class="kw">Alice</span> shared secret: S = a * B = a * b * G
+<span class="kw">Bob</span>   shared secret: S = b * A = b * a * G  <span class="cmt">→ same S ✓</span>
+
+<span class="cmt"># Attacker sees G, A, B but cannot find a or b</span>
+<span class="cmt"># (Elliptic Curve Discrete Logarithm Problem)</span>
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        X25519 (ECDH over Curve25519) is the key exchange algorithm in TLS 1.3, Signal,
+        WireGuard, and most modern secure messaging systems.
+      </p>
+    </div>
+
+    <!-- PGP -->
+    <div class="algo-card" id="pgp">
+      <div class="algo-card-header">
+        <h3>PGP / GPG — Pretty Good Privacy</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Widely Used</span>
+          <span class="badge badge-blue">Hybrid Cryptography</span>
+          <span class="badge badge-blue">Email / Files</span>
+        </div>
+      </div>
+      <p>
+        PGP (Pretty Good Privacy), created by Phil Zimmermann in 1991, is a data encryption
+        and signing program that uses a hybrid cryptographic system. It combines the speed of
+        symmetric encryption with the convenience of public-key cryptography. GPG (GNU Privacy Guard)
+        is the free, open-source implementation of the OpenPGP standard (RFC 4880).
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Symmetric Part</label><value>AES / Twofish / 3DES</value></div>
+        <div class="algo-stat"><label>Asymmetric Part</label><value>RSA / ECDH / ElGamal</value></div>
+        <div class="algo-stat"><label>Signing</label><value>DSA / RSA / Ed25519</value></div>
+        <div class="algo-stat"><label>Web of Trust</label><value>Decentralized key auth</value></div>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">How PGP Encrypts a Message</h5>
+      <ol class="algo-steps">
+        <li>A random <strong>session key</strong> is generated (e.g., 256-bit AES key).</li>
+        <li>The message is encrypted with the session key using a symmetric cipher (AES-256).</li>
+        <li>The session key is encrypted with the <strong>recipient's public key</strong> (RSA / ECDH).</li>
+        <li>Both the encrypted message and encrypted session key are bundled and sent.</li>
+        <li>Recipient decrypts the session key with their <strong>private key</strong>, then decrypts the message.</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        This hybrid approach solves asymmetric encryption's biggest problem — it's
+        computationally expensive for large data. Symmetric encryption handles the bulk,
+        asymmetric encryption handles only the small session key.
+      </p>
+    </div>
+
+    <!-- Paillier -->
+    <div class="algo-card" id="paillier">
+      <div class="algo-card-header">
+        <h3>Paillier Cryptosystem</h3>
+        <div class="algo-badges">
+          <span class="badge badge-blue">Homomorphic</span>
+          <span class="badge badge-blue">Probabilistic</span>
+          <span class="badge badge-yellow">Research / Specialized</span>
+        </div>
+      </div>
+      <p>
+        The Paillier cryptosystem, developed by Pascal Paillier in 1999, is a probabilistic
+        asymmetric algorithm that supports <strong>additive homomorphism</strong> — meaning you can
+        perform addition on encrypted values without decrypting them. This property makes it
+        valuable for privacy-preserving computation, secure voting systems, and federated
+        machine learning.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Security Basis</label><value>Decisional Composite Residuosity</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>2048+ bits (n = p×q)</value></div>
+        <div class="algo-stat"><label>Homomorphism</label><value>Additive only</value></div>
+        <div class="algo-stat"><label>Application</label><value>e-voting, federated ML</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>paillier_homomorphic_property</span></div>
+        <pre>
+<span class="cmt"># Additive homomorphism:</span>
+<span class="kw">Enc</span>(m₁) × Enc(m₂) mod n² = <span class="kw">Enc</span>(m₁ + m₂)
+
+<span class="cmt"># Example: compute sum of encrypted salaries without seeing them</span>
+<span class="kw">Enc</span>(50000) × <span class="kw">Enc</span>(60000) → <span class="kw">Decrypt</span> → 110000 ✓
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        Paillier is the foundation of several privacy-preserving technologies including
+        some electronic voting systems and privacy-preserving data aggregation in IoT.
+      </p>
+    </div>
+
+    <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="/symmetric" class="btn btn-outline">← Symmetric Encryption</a>
+      <a href="/tools" class="btn btn-primary">Try Encryption Tools →</a>
+    </div>
+
+  </article>
+</div>
 {% endblock %}

@@ -1,25 +1,96 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    {% block docTitle %}{% endblock docTitle %}
-{% endblock title %}
+{% block title %}Documentation{% endblock %}
 
-{% block stylesheet %}
-    <link rel="stylesheet" href="../static/stylesheet_docs.css">
-{% endblock stylesheet %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_docs.css">
+{% endblock %}
 
-{% block scripts %}
-{% endblock scripts %}
+{% block header %}
+<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+{% endblock %}
+
 {% block body %}
-    <container id="MainContainer">
-        <div class="sidenav">
-            <a href="symmetric" >Symmetric Encryption</a>
-            <a href="asymmetric">Asymmetric Encryption</a>
+<div class="page-wrap" style="padding-top:3rem;padding-bottom:4rem;">
+
+  <p class="section-label">// Documentation</p>
+  <h1 style="margin-bottom:0.5rem;">CryptYourMind <span style="color:var(--accent)">Reference</span></h1>
+  <p style="max-width:600px;margin-bottom:3rem;">
+    Everything you need to understand modern and classical cryptography —
+    from block ciphers to public-key infrastructure.
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+
+    <a href="/symmetric" class="card" style="display:block;text-decoration:none;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <span style="font-size:2rem;">🔑</span>
+        <div>
+          <h3 style="margin:0;font-size:1.1rem;">Symmetric Encryption</h3>
+          <span class="badge badge-blue" style="margin-top:0.3rem;display:inline-block;">One Shared Key</span>
         </div>
-        <div id="MainDocs">
-            {% block MainDocs %}
-            
-            {% endblock MainDocs %}
+      </div>
+      <p style="font-size:0.92rem;margin-bottom:1rem;">
+        AES, DES, 3DES, Blowfish, Twofish, RC4, ChaCha20, Salsa20, IDEA, and more.
+        Learn how single-key encryption works, its strengths, and why key distribution is the challenge.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+        <span class="badge badge-green">AES</span>
+        <span class="badge badge-yellow">DES</span>
+        <span class="badge badge-green">ChaCha20</span>
+        <span class="badge badge-green">Twofish</span>
+        <span class="badge badge-blue">IDEA</span>
+      </div>
+      <p style="color:var(--accent);font-family:var(--font-mono);font-size:0.8rem;margin:1rem 0 0;text-transform:uppercase;letter-spacing:0.08em;">Read docs →</p>
+    </a>
+
+    <a href="/asymmetric" class="card" style="display:block;text-decoration:none;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <span style="font-size:2rem;">🔐</span>
+        <div>
+          <h3 style="margin:0;font-size:1.1rem;">Asymmetric Encryption</h3>
+          <span class="badge badge-green" style="margin-top:0.3rem;display:inline-block;">Public / Private Key</span>
         </div>
-    </container>
-{% endblock body %}
+      </div>
+      <p style="font-size:0.92rem;margin-bottom:1rem;">
+        RSA, ECC, Diffie-Hellman, ElGamal, DSA, ECDSA, Ed25519, ECDH, PGP, and more.
+        Understand public-key cryptography, digital signatures, and key exchange protocols.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+        <span class="badge badge-green">RSA</span>
+        <span class="badge badge-green">ECC</span>
+        <span class="badge badge-blue">DH</span>
+        <span class="badge badge-green">Ed25519</span>
+        <span class="badge badge-blue">PGP</span>
+      </div>
+      <p style="color:var(--accent);font-family:var(--font-mono);font-size:0.8rem;margin:1rem 0 0;text-transform:uppercase;letter-spacing:0.08em;">Read docs →</p>
+    </a>
+
+  </div>
+
+  <hr class="divider" style="margin:3rem 0;">
+
+  <h2 style="margin-bottom:1.5rem;">Quick Reference</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Algorithm</th>
+        <th>Type</th>
+        <th>Key Size</th>
+        <th>Status</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>AES-256</td><td>Symmetric</td><td>256 bits</td><td><span class="badge badge-green">Recommended</span></td><td>General-purpose encryption</td></tr>
+      <tr><td>ChaCha20-Poly1305</td><td>Symmetric</td><td>256 bits</td><td><span class="badge badge-green">Recommended</span></td><td>Mobile, no AES-HW</td></tr>
+      <tr><td>RSA-2048+</td><td>Asymmetric</td><td>2048+ bits</td><td><span class="badge badge-green">Acceptable</span></td><td>Key exchange, signatures</td></tr>
+      <tr><td>ECDH / Ed25519</td><td>Asymmetric</td><td>256 bits</td><td><span class="badge badge-green">Recommended</span></td><td>Modern key exchange / signing</td></tr>
+      <tr><td>Blowfish</td><td>Symmetric</td><td>32–448 bits</td><td><span class="badge badge-yellow">Legacy/Niche</span></td><td>bcrypt password hashing</td></tr>
+      <tr><td>3DES</td><td>Symmetric</td><td>112/168 bits</td><td><span class="badge badge-yellow">Deprecated</span></td><td>Legacy systems only</td></tr>
+      <tr><td>DES</td><td>Symmetric</td><td>56 bits</td><td><span class="badge badge-red">Broken</span></td><td>Education only</td></tr>
+      <tr><td>RC4</td><td>Symmetric</td><td>Variable</td><td><span class="badge badge-red">Prohibited</span></td><td>Education only</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

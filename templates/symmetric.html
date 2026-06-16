@@ -1,24 +1,437 @@
-{% extends 'documentation.html' %}
+{% extends 'base.html' %}
 
-{% block docTitle %}
-  Symmetric
+{% block title %}Symmetric Encryption{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_docs.css">
 {% endblock %}
 
-{% block MainDocs %}
-<main class="ContentSection">
-  <h3>Symmetric-Key Encryption - One Key</h3>
-  <p>
-      Symmetric-key encryption, also called shared-key encryption or secret-key cryptography, uses a single key
-      that both the sender and recipient possess. This key, used for both encryption and decryption, is called a
-      secret key (also referred to as a symmetric) called a secret key (also referred to as a symmetric key or
-      session key). Symmetric-key encryption is an efficient method for encrypting large amounts of data. But the
-      drawback is to transfer the Key to Receiver as it is prone to security risks.
-  </p>
-    <center>
-      <img src="../static/symmetric.png" class="docImage">
-    </center>
-</main>  
-<main class="ContentSection">
-  <h4>Some famous Symmetric-Key Algorithms</h4>
-</main>
+{% block header %}
+<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+{% endblock %}
+
+{% block body %}
+<div class="docs-layout">
+
+  <!-- Sidebar -->
+  <nav class="docs-sidebar">
+    <h6>Documentation</h6>
+    <a href="/symmetric" class="active">Symmetric</a>
+    <a href="/asymmetric">Asymmetric</a>
+
+    <h6>Symmetric Algorithms</h6>
+    <a href="#aes" class="sub-link">AES</a>
+    <a href="#des" class="sub-link">DES</a>
+    <a href="#3des" class="sub-link">Triple DES</a>
+    <a href="#blowfish" class="sub-link">Blowfish</a>
+    <a href="#twofish" class="sub-link">Twofish</a>
+    <a href="#idea" class="sub-link">IDEA</a>
+    <a href="#rc4" class="sub-link">RC4</a>
+    <a href="#rc2" class="sub-link">RC2</a>
+    <a href="#salsa20" class="sub-link">Salsa20</a>
+    <a href="#chacha20" class="sub-link">ChaCha20</a>
+
+    <h6>Quick Links</h6>
+    <a href="/tools" class="sub-link">↗ Try the Tools</a>
+    <a href="/examples" class="sub-link">↗ Examples</a>
+  </nav>
+
+  <!-- Main content -->
+  <article class="docs-content">
+
+    <div class="docs-page-header">
+      <p class="section-label">// Symmetric Encryption</p>
+      <h1>One Key, <span style="color:var(--accent)">Shared Secret</span></h1>
+      <p class="lead">
+        Symmetric-key encryption uses a single key for both encryption and decryption.
+        It is fast and efficient for large data volumes, but requires a secure way to
+        share the key between parties.
+      </p>
+    </div>
+
+    <div class="algo-image">
+      <img src="/static/symmetric.png" alt="Symmetric encryption diagram">
+    </div>
+
+    <div class="algo-stats" style="margin-top:1.5rem;">
+      <div class="algo-stat">
+        <label>Key Type</label>
+        <value>Single Shared Key</value>
+      </div>
+      <div class="algo-stat">
+        <label>Speed</label>
+        <value>Fast</value>
+      </div>
+      <div class="algo-stat">
+        <label>Key Distribution</label>
+        <value>Challenge</value>
+      </div>
+      <div class="algo-stat">
+        <label>Best Use Case</label>
+        <value>Bulk Data Encryption</value>
+      </div>
+    </div>
+
+    <!-- AES -->
+    <div class="docs-divider"><span>Algorithms</span></div>
+
+    <div class="algo-card" id="aes">
+      <div class="algo-card-header">
+        <h3>AES — Advanced Encryption Standard</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Modern</span>
+          <span class="badge badge-green">Industry Standard</span>
+          <span class="badge badge-blue">Block Cipher</span>
+        </div>
+      </div>
+      <p>
+        AES is the gold standard of symmetric encryption, adopted by NIST in 2001 and used
+        everywhere from TLS/HTTPS to disk encryption. It operates on 128-bit blocks and supports
+        128, 192, or 256-bit keys. AES replaced DES and remains secure against all known attacks.
+      </p>
+
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>128 bits</value></div>
+        <div class="algo-stat"><label>Key Sizes</label><value>128 / 192 / 256 bits</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>10 / 12 / 14</value></div>
+        <div class="algo-stat"><label>Published</label><value>2001 (NIST)</value></div>
+      </div>
+
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">How It Works</h5>
+      <ol class="algo-steps">
+        <li>Plaintext is arranged into a 4×4 byte state matrix.</li>
+        <li><strong>SubBytes</strong> — each byte is substituted using a fixed S-box lookup table.</li>
+        <li><strong>ShiftRows</strong> — rows of the state matrix are cyclically shifted.</li>
+        <li><strong>MixColumns</strong> — each column is multiplied with a fixed polynomial (skipped in final round).</li>
+        <li><strong>AddRoundKey</strong> — the state is XORed with the round key derived from key expansion.</li>
+        <li>Steps 2–5 repeat for 10, 12, or 14 rounds depending on key size.</li>
+      </ol>
+
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>aes_modes.txt</span></div>
+        <pre>
+<span class="cmt"># Common AES Modes of Operation</span>
+<span class="kw">ECB</span>  - Electronic Codebook   <span class="cmt">(insecure — same block → same cipher)</span>
+<span class="kw">CBC</span>  - Cipher Block Chaining  <span class="cmt">(most common; requires IV)</span>
+<span class="kw">CTR</span>  - Counter Mode           <span class="cmt">(parallelizable; stream cipher behavior)</span>
+<span class="kw">GCM</span>  - Galois/Counter Mode    <span class="cmt">(AEAD — encryption + authentication)</span>
+<span class="kw">CCM</span>  - Counter + CBC-MAC      <span class="cmt">(used in Wi-Fi, IoT)</span>
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        <strong>Real-world usage:</strong> HTTPS/TLS, Wi-Fi (WPA2/WPA3), disk encryption (BitLocker, FileVault),
+        SSH, file compression tools, government/military communications.
+      </p>
+    </div>
+
+    <!-- DES -->
+    <div class="algo-card" id="des">
+      <div class="algo-card-header">
+        <h3>DES — Data Encryption Standard</h3>
+        <div class="algo-badges">
+          <span class="badge badge-red">Deprecated</span>
+          <span class="badge badge-yellow">Historical</span>
+          <span class="badge badge-blue">Block Cipher</span>
+        </div>
+      </div>
+      <p>
+        DES was the dominant symmetric algorithm from the 1970s to the 1990s, developed by IBM
+        and standardized by NIST in 1977. It uses a 56-bit key, which is now considered too short —
+        modern hardware can brute-force DES in under a day. DES is retired but foundational to
+        understanding how block ciphers work.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>64 bits</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>56 effective bits</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>16 (Feistel rounds)</value></div>
+        <div class="algo-stat"><label>Status</label><value>Deprecated (2001)</value></div>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">Feistel Structure</h5>
+      <ol class="algo-steps">
+        <li>64-bit plaintext block is split into two 32-bit halves: L and R.</li>
+        <li>In each of 16 rounds: L₁ = R₀, R₁ = L₀ XOR F(R₀, K_round).</li>
+        <li>The function F includes expansion, XOR with round key, S-box substitution, and permutation.</li>
+        <li>After 16 rounds, halves are recombined and a final permutation is applied.</li>
+      </ol>
+      <p style="font-size:0.9rem;color:var(--text-muted);margin-top:0.75rem;">
+        DES was broken by EFF's "Deep Crack" in 1998 in under 23 hours. It should <strong style="color:var(--danger)">never</strong> be used for new applications.
+      </p>
+    </div>
+
+    <!-- Triple DES -->
+    <div class="algo-card" id="3des">
+      <div class="algo-card-header">
+        <h3>3DES — Triple DES</h3>
+        <div class="algo-badges">
+          <span class="badge badge-yellow">Legacy</span>
+          <span class="badge badge-blue">Block Cipher</span>
+        </div>
+      </div>
+      <p>
+        Triple DES (3DES or TDES) applies DES three times to each block using two or three separate
+        keys, effectively extending DES's key length to 112 or 168 bits. It was a stopgap after
+        DES became insecure but before AES was standardized.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>64 bits</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>112 / 168 bits</value></div>
+        <div class="algo-stat"><label>Speed</label><value>~3× slower than DES</value></div>
+        <div class="algo-stat"><label>Status</label><value>Phased out by NIST</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>3des_operation</span></div>
+        <pre>
+<span class="cmt"># Encrypt-Decrypt-Encrypt (EDE)</span>
+<span class="kw">Ciphertext</span> = E(K3, D(K2, E(K1, Plaintext)))
+
+<span class="cmt"># With 2 keys: K1 = K3 (112-bit security)</span>
+<span class="cmt"># With 3 keys: K1 ≠ K2 ≠ K3 (168-bit key, ~112-bit security)</span>
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        NIST officially deprecated 3DES in 2023. Modern systems should use AES instead.
+      </p>
+    </div>
+
+    <!-- Blowfish -->
+    <div class="algo-card" id="blowfish">
+      <div class="algo-card-header">
+        <h3>Blowfish</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Unbroken</span>
+          <span class="badge badge-blue">Block Cipher</span>
+          <span class="badge badge-yellow">Niche Use</span>
+        </div>
+      </div>
+      <p>
+        Blowfish was designed by Bruce Schneier in 1993 as a fast, free alternative to DES.
+        It uses a variable-length key (32–448 bits) and a Feistel structure with 16 rounds.
+        Blowfish has never been broken, but its 64-bit block size makes it vulnerable to
+        birthday attacks on large data, so use Twofish or AES instead for new systems.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>64 bits</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>32–448 bits</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>16</value></div>
+        <div class="algo-stat"><label>Notable Use</label><value>bcrypt (password hashing)</value></div>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        Blowfish is the basis of <strong>bcrypt</strong>, still widely used for password hashing because
+        its intentionally slow key setup makes brute-force attacks expensive.
+      </p>
+    </div>
+
+    <!-- RC4 -->
+    <div class="algo-card" id="rc4">
+      <div class="algo-card-header">
+        <h3>RC4 — Rivest Cipher 4</h3>
+        <div class="algo-badges">
+          <span class="badge badge-red">Broken / Prohibited</span>
+          <span class="badge badge-yellow">Stream Cipher</span>
+          <span class="badge badge-yellow">Historical</span>
+        </div>
+      </div>
+      <p>
+        RC4 is a stream cipher designed by Ron Rivest in 1987. It generates a pseudorandom
+        byte stream (keystream) that is XORed with plaintext. RC4 was extremely popular —
+        it powered WEP, early SSL/TLS, and many other protocols — but multiple serious
+        biases in its output have been discovered. It is now prohibited by RFC 7465.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Type</label><value>Stream Cipher</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>40–2048 bits</value></div>
+        <div class="algo-stat"><label>Status</label><value>Prohibited (RFC 7465)</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>rc4_core_idea</span></div>
+        <pre>
+<span class="cmt"># RC4 Core: Key Scheduling + Pseudo-Random Generation</span>
+<span class="kw">Initialize</span> S[0..255] = [0,1,2,...,255]
+<span class="kw">Key Schedule</span>(K) → shuffle S using K
+<span class="kw">For each byte</span>: output_byte = S[(S[i]+S[j]) mod 256]
+<span class="kw">Ciphertext</span> = Plaintext XOR keystream
+        </pre>
+      </div>
+    </div>
+
+    <!-- ChaCha20 -->
+    <div class="algo-card" id="chacha20">
+      <div class="algo-card-header">
+        <h3>ChaCha20</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Modern</span>
+          <span class="badge badge-green">Fast on Mobile</span>
+          <span class="badge badge-blue">Stream Cipher</span>
+        </div>
+      </div>
+      <p>
+        ChaCha20 is a modern stream cipher designed by Daniel J. Bernstein as an improvement
+        over Salsa20. It provides excellent performance on systems without hardware AES
+        acceleration (like older mobile devices). Combined with Poly1305 (for authentication),
+        ChaCha20-Poly1305 is an AEAD cipher standardized in RFC 8439 and used in TLS 1.3.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Key Size</label><value>256 bits</value></div>
+        <div class="algo-stat"><label>Nonce Size</label><value>96 bits (RFC 8439)</value></div>
+        <div class="algo-stat"><label>Performance</label><value>~3× faster than AES on no-HW</value></div>
+        <div class="algo-stat"><label>Used In</label><value>TLS 1.3, WireGuard, SSH</value></div>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">Quarter Round Function</h5>
+      <ol class="algo-steps">
+        <li>a += b; d ^= a; d <<<= 16</li>
+        <li>c += d; b ^= c; b <<<= 12</li>
+        <li>a += b; d ^= a; d <<<= 8</li>
+        <li>c += d; b ^= c; b <<<= 7</li>
+        <li>20 rounds (10 column rounds + 10 diagonal rounds) are applied to a 512-bit state.</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        <strong>Real-world usage:</strong> Google uses ChaCha20-Poly1305 in HTTPS when AES hardware
+        acceleration is unavailable. WireGuard VPN uses ChaCha20 exclusively.
+      </p>
+    </div>
+
+    <!-- Twofish -->
+    <div class="algo-card" id="twofish">
+      <div class="algo-card-header">
+        <h3>Twofish</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Secure</span>
+          <span class="badge badge-blue">Block Cipher</span>
+          <span class="badge badge-yellow">AES Finalist</span>
+        </div>
+      </div>
+      <p>
+        Twofish is a 128-bit block cipher designed by Bruce Schneier and colleagues as a finalist
+        in the AES competition (losing to Rijndael). It supports 128, 192, or 256-bit keys, uses a
+        Feistel structure with 16 rounds, and incorporates key-dependent S-boxes derived from
+        the input key itself — making it highly flexible and still considered unbroken.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>128 bits</value></div>
+        <div class="algo-stat"><label>Key Sizes</label><value>128 / 192 / 256 bits</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>16</value></div>
+        <div class="algo-stat"><label>Status</label><value>Unbroken / Free to use</value></div>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">Key Innovation</h5>
+      <ol class="algo-steps">
+        <li>Key material is split into two halves: one produces key-dependent S-boxes, the other generates subkeys via a bijective function (PHT).</li>
+        <li>Each round applies MDS (Maximum Distance Separable) matrix multiplication for diffusion.</li>
+        <li>Input whitening and output whitening XOR the data with subkeys before the first round and after the last.</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        Twofish is a strong alternative to AES and is used in some open-source tools like
+        <strong>VeraCrypt</strong> as one of its encryption options.
+      </p>
+    </div>
+
+    <!-- IDEA -->
+    <div class="algo-card" id="idea">
+      <div class="algo-card-header">
+        <h3>IDEA — International Data Encryption Algorithm</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Secure</span>
+          <span class="badge badge-blue">Block Cipher</span>
+          <span class="badge badge-yellow">Patent Expired</span>
+        </div>
+      </div>
+      <p>
+        IDEA was designed by James Massey and Xuejia Lai in 1991 and is notable for mixing
+        three algebraic groups — XOR (⊕), addition mod 2¹⁶, and multiplication mod (2¹⁶ + 1) —
+        in every round. This mixing of incompatible operations is what makes IDEA resistant to
+        differential and linear cryptanalysis. IDEA was the cipher used in PGP 2.x.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>64 bits</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>128 bits</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>8 full + 1 output</value></div>
+        <div class="algo-stat"><label>Patent</label><value>Expired 2012 (EU)</value></div>
+      </div>
+      <div class="code-demo" style="margin-top:1rem;">
+        <div class="code-demo-header"><div class="code-demo-dot"></div><span>idea_round_operations</span></div>
+        <pre>
+<span class="cmt"># Three incompatible group operations per half-round:</span>
+<span class="kw">XOR</span>          mod 2¹⁶       <span class="cmt">(bitwise)</span>
+<span class="kw">Addition</span>     mod 2¹⁶       <span class="cmt">(integer add, 16-bit wrap)</span>
+<span class="kw">Multiplication</span> mod 2¹⁶+1  <span class="cmt">(multiplicative group, 0→2¹⁶)</span>
+        </pre>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        No successful cryptanalytic attacks against the full 8-round IDEA are known.
+        It remains secure but has largely been superseded by AES for new applications.
+      </p>
+    </div>
+
+    <!-- Salsa20 -->
+    <div class="algo-card" id="salsa20">
+      <div class="algo-card-header">
+        <h3>Salsa20</h3>
+        <div class="algo-badges">
+          <span class="badge badge-green">Secure</span>
+          <span class="badge badge-blue">Stream Cipher</span>
+          <span class="badge badge-green">Fast</span>
+        </div>
+      </div>
+      <p>
+        Salsa20 is a stream cipher designed by Daniel J. Bernstein in 2005, submitted to
+        eSTREAM and selected as a Phase 3 finalist. It operates on a 64-byte (512-bit) state
+        initialized from a 256-bit key, a 64-bit nonce, and a 64-bit counter. Its successor,
+        ChaCha20, improves on Salsa20's diffusion in the first few rounds and is now more
+        widely deployed.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Key Size</label><value>128 or 256 bits</value></div>
+        <div class="algo-stat"><label>Nonce Size</label><value>64 bits</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>20 (Salsa20/20)</value></div>
+        <div class="algo-stat"><label>State Size</label><value>512 bits</value></div>
+      </div>
+      <h5 style="color:var(--accent);margin:1rem 0 0.5rem;">How It Works</h5>
+      <ol class="algo-steps">
+        <li>State is a 4×4 matrix of 32-bit words formed from constants, key, nonce, and counter.</li>
+        <li>20 rounds of quarter-round operations (ARX: add, rotate, XOR) mix the state thoroughly.</li>
+        <li>The original state is added back to the mixed state (counter mode), producing a 64-byte keystream block.</li>
+        <li>Keystream is XORed with plaintext to produce ciphertext. Counter increments for each block.</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        Salsa20/8 (8 rounds) and Salsa20/12 (12 rounds) offer faster performance with reduced
+        security margins. Only Salsa20/20 is recommended for security-critical use.
+      </p>
+    </div>
+
+    <!-- RC2 -->
+    <div class="algo-card" id="rc2">
+      <div class="algo-card-header">
+        <h3>RC2 — Rivest Cipher 2</h3>
+        <div class="algo-badges">
+          <span class="badge badge-yellow">Legacy</span>
+          <span class="badge badge-blue">Block Cipher</span>
+          <span class="badge badge-red">Avoid</span>
+        </div>
+      </div>
+      <p>
+        RC2 is a 64-bit variable-key-length block cipher designed by Ron Rivest in 1987 for
+        RSA Data Security. It was widely used in early S/MIME email encryption and SSL/TLS.
+        RC2 gained notoriety in the 1990s "crypto wars" — the US government allowed RC2
+        export only with 40-bit effective key length as a deliberate weakness.
+      </p>
+      <div class="algo-stats">
+        <div class="algo-stat"><label>Block Size</label><value>64 bits</value></div>
+        <div class="algo-stat"><label>Key Size</label><value>8–1024 bits (effective: 1–1024)</value></div>
+        <div class="algo-stat"><label>Rounds</label><value>18 (mixing + mashing)</value></div>
+        <div class="algo-stat"><label>Status</label><value>Legacy — avoid in new systems</value></div>
+      </div>
+      <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted);">
+        RC2 uses a unique key expansion algorithm (key mixing table derived from
+        PI digits) and alternates between "mixing" and "mashing" rounds. The
+        deliberately limited export key length made it a symbol of government-mandated
+        cryptographic weakness. <strong>Do not use RC2 for new applications.</strong>
+      </p>
+    </div>
+
+    <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="/asymmetric" class="btn btn-primary">Asymmetric Encryption →</a>
+      <a href="/tools" class="btn btn-outline">Try Encryption Tools →</a>
+    </div>
+
+  </article>
+</div>
 {% endblock %}

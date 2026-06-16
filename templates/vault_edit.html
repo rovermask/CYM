@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Edit — {{ entry.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_vault.css">
+<link rel="stylesheet" href="/static/stylesheet_vault_dashboard.css">
+{% endblock %}
+
+{% block header %}
+<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+{% endblock %}
+
+{% block body %}
+<div class="page-wrap" style="max-width:700px;padding-top:3rem;padding-bottom:4rem;">
+  <a href="/vault/dashboard" class="feature-link" style="display:inline-block;margin-bottom:1.5rem;">← Back to Vault</a>
+  <h2 style="margin-bottom:0.25rem;">Edit Entry</h2>
+  <p class="muted" style="margin-bottom:2rem;">Content is shown decrypted for editing and will be re-encrypted on save.</p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="vault-alert vault-alert-{{ message.tags }}" style="margin-bottom:1rem;">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" action="/vault/edit/{{ entry.id }}" class="vd-form">
+    {% csrf_token %}
+    <div class="vault-form-group">
+      <label>Title</label>
+      <input type="text" name="title" value="{{ entry.title }}" required maxlength="200">
+    </div>
+    <div class="vault-form-group">
+      <label>Content <span class="muted" style="font-weight:400;font-size:0.8rem;">(decrypted)</span></label>
+      <textarea name="content" id="edit-content" rows="14" required>{{ content }}</textarea>
+      <div class="vd-char-counter"><span id="char-count">0</span> characters</div>
+    </div>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <button type="submit" class="vault-btn">🔐 Encrypt &amp; Save</button>
+      <a href="/vault/dashboard" class="vault-btn vault-btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const ta = document.getElementById('edit-content');
+const ct = document.getElementById('char-count');
+const update = () => ct.textContent = ta.value.length;
+ta.addEventListener('input', update);
+update();
+</script>
+{% endblock %}

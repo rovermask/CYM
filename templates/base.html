@@ -1,58 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock title %} | CryptYourMind</title>
-    
-    {% block stylesheet %}
-    
-    {% endblock stylesheet %}
-    
-    <style>
-        {% block styles %}
-        
-        {% endblock styles %}
-    </style>
-
-    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
-    <script>
-        {% block scripts %}
-        
-        {% endblock scripts %}
-        $(window).scroll(function () {
-            if ($(window).scrollTop()) {
-                $("nav").addClass("black");
-            }
-            else {
-                $("nav").removeClass("black");
-            }
-        });
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %} | CryptYourMind</title>
+  <link rel="stylesheet" href="/static/stylesheet_base.css">
+  {% block extra_css %}{% endblock %}
 </head>
-
 <body>
-    <div id="MainHome">
-        <header>
-            <nav>
-                <div class="logo"><a href="#MainHome">CYM</a></div>
-                <div class="menu">
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="symmetric">Documentation</a></li>
-                        <li><a href="examples">Examples</a></li>
-                        <li><a href="tools">Tools</a></li>
-                        <li><a href="vault">THE VAULT</a></li>
-                        <li><a href="about">About Us</a></li>
-                    </ul>
-                </div>
-            </nav>
-            {% block homebody %}{% endblock homebody %}
-            
-        </header>
-        {% block body %}{% endblock body %}
-</body>
 
+  <nav id="mainNav">
+    <a href="/" class="nav-logo">
+      <span class="bracket">[</span>CYM<span class="bracket">]</span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+      <li>
+        <a href="/" {% if request.path == '/' %}class="nav-active"{% endif %}>Home</a>
+      </li>
+      <li class="dropdown" id="docsDropdown">
+        <a href="/documentation"
+           class="dropdown-trigger {% if '/symmetric' in request.path or '/asymmetric' in request.path or '/documentation' in request.path %}nav-active{% endif %}"
+           onclick="toggleDropdown(event,'docsDropdown')">
+          Docs <span>▾</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="/documentation" {% if request.path == '/documentation' %}class="nav-active"{% endif %}>Overview</a></li>
+          <li><a href="/symmetric" {% if request.path == '/symmetric' %}class="nav-active"{% endif %}>Symmetric</a></li>
+          <li><a href="/asymmetric" {% if request.path == '/asymmetric' %}class="nav-active"{% endif %}>Asymmetric</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/examples" {% if request.path == '/examples' %}class="nav-active"{% endif %}>Examples</a>
+      </li>
+      <li>
+        <a href="/tools" {% if request.path == '/tools' %}class="nav-active"{% endif %}>Tools</a>
+      </li>
+      <li>
+        <a href="/vault" class="vault-link {% if request.path == '/vault' %}nav-active{% endif %}">⬡ The Vault</a>
+      </li>
+      <li>
+        <a href="/about" {% if request.path == '/about' %}class="nav-active"{% endif %}>About</a>
+      </li>
+    </ul>
+  </nav>
+
+  {% block header %}{% endblock %}
+
+  <main>
+    {% block body %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>
+        <span class="accent">CryptYourMind</span> — Educating the next generation of cryptographers.
+      </p>
+      <nav class="footer-nav">
+        <a href="/">Home</a>
+        <a href="/symmetric">Symmetric</a>
+        <a href="/asymmetric">Asymmetric</a>
+        <a href="/examples">Examples</a>
+        <a href="/tools">Tools</a>
+        <a href="/about">About</a>
+      </nav>
+      <p class="muted" style="font-size:0.8rem;margin-top:0.75rem;">
+        All algorithm demonstrations are for educational purposes only.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll nav behavior
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // Mobile toggle
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Dropdown toggle on mobile
+    function toggleDropdown(e, id) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        document.getElementById(id).classList.toggle('open');
+      }
+    }
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
 </html>

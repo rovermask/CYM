@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block title %}Vault — Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_vault.css">
+<link rel="stylesheet" href="/static/stylesheet_vault_dashboard.css">
+{% endblock %}
+
+{% block header %}
+<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+{% endblock %}
+
+{% block body %}
+<div class="vd-layout">
+
+  <!-- ── Sidebar ──────────────────────────────────────────────────── -->
+  <aside class="vd-sidebar">
+    <div class="vd-user-card">
+      <div class="vd-avatar">{{ user.username|first|upper }}</div>
+      <div>
+        <div class="vd-username">{{ user.username }}</div>
+        <div class="vd-email muted">{{ user.email }}</div>
+      </div>
+    </div>
+
+    <div class="vd-stats">
+      <div class="vd-stat">
+        <span class="vd-stat-n accent">{{ entry_count }}</span>
+        <span class="vd-stat-l">Entr{{ entry_count|pluralize:"y,ies" }}</span>
+      </div>
+      <div class="vd-stat">
+        <span class="vd-stat-n" style="font-size:0.7rem;color:var(--accent);">{{ fingerprint }}</span>
+        <span class="vd-stat-l">Key ID</span>
+      </div>
+    </div>
+
+    <nav class="vd-nav">
+      <button class="vd-nav-btn active" onclick="showPanel('list')">📋 My Entries</button>
+      <button class="vd-nav-btn" onclick="showPanel('new')">✏️ New Entry</button>
+    </nav>
+
+    <div class="vd-encryption-notice">
+      <strong>🔐 Encrypted at rest</strong>
+      <p>
+        Your notes are encrypted with AES-128 (Fernet) using a key derived
+        server-side from your account. An admin with DB + server access could
+        theoretically read them — suitable for a learning platform, not for
+        storing highly sensitive secrets.
+      </p>
+    </div>
+
+    <form method="POST" action="/vault/logout" style="margin-top:auto;">
+      {% csrf_token %}
+      <button type="submit" class="vault-btn vault-btn-outline" style="width:100%;">
+        🔒 Lock &amp; Logout
+      </button>
+    </form>
+  </aside>
+
+  <!-- ── Main content ─────────────────────────────────────────────── -->
+  <main class="vd-main">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="vault-alert vault-alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Entry list panel -->
+    <div class="vd-panel active" id="panel-list">
+      <div class="vd-panel-header">
+        <h2>My Vault Entries <span class="muted" style="font-size:1rem;font-weight:400;">({{ entry_count }})</span></h2>
+        <button class="vault-btn vault-btn-sm" onclick="showPanel('new')">+ New Entry</button>
+      </div>
+
+      {% if entries %}
+        <div class="vd-entries-grid">
+          {% for entry in entries %}
+          <div class="vd-entry-card" id="card-{{ entry.id }}">
+            <div class="vd-entry-header">
+              <h4 class="vd-entry-title">{{ entry.title }}</h4>
+              <div class="vd-entry-actions">
+                <button class="vd-icon-btn" title="Edit" onclick="openEditModal({{ entry.id }}, '{{ entry.title|escapejs }}', `{{ entry.content|escapejs }}`)">✏️</button>
+                <button class="vd-icon-btn vd-icon-btn-danger" title="Delete" onclick="confirmDelete({{ entry.id }}, '{{ entry.title|escapejs }}')">🗑️</button>
+              </div>
+            </div>
+            <p class="vd-entry-preview">{{ entry.preview }}</p>
+            <div class="vd-entry-meta">
+              <span>{{ entry.char_count }} chars</span>
+              <span>Updated {{ entry.updated_at|date:"M d, Y H:i" }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="vd-empty">
+          <div class="vd-empty-icon">🔐</div>
+          <h3>Your Vault is empty</h3>
+          <p>Create your first encrypted entry to get started.</p>
+          <button class="vault-btn" onclick="showPanel('new')">Create First Entry</button>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- New entry panel -->
+    <div class="vd-panel" id="panel-new">
+      <div class="vd-panel-header">
+        <h2>New Vault Entry</h2>
+        <button class="vault-btn vault-btn-outline vault-btn-sm" onclick="showPanel('list')">← Back</button>
+      </div>
+      <form method="POST" action="/vault/create" class="vd-form">
+        {% csrf_token %}
+        <div class="vault-form-group">
+          <label for="new-title">Title</label>
+          <input type="text" id="new-title" name="title" placeholder="e.g. API Keys, Private Notes…" required maxlength="200">
+        </div>
+        <div class="vault-form-group">
+          <label for="new-content">
+            Content
+            <span class="muted" style="font-weight:400;font-size:0.8rem;">(will be encrypted)</span>
+          </label>
+          <textarea id="new-content" name="content" rows="10"
+            placeholder="Your private note content goes here. This will be AES-encrypted before storing in the database."
+            required></textarea>
+          <div class="vd-char-counter"><span id="new-char-count">0</span> characters</div>
+        </div>
+        <button type="submit" class="vault-btn">🔐 Encrypt &amp; Save</button>
+      </form>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── Edit modal ──────────────────────────────────────────────── -->
+<div class="vd-modal-overlay" id="editModalOverlay" onclick="closeEditModal()">
+  <div class="vd-modal" onclick="event.stopPropagation()">
+    <div class="vd-modal-header">
+      <h3>Edit Entry</h3>
+      <button class="vd-modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <form method="POST" id="editForm" class="vd-form">
+      {% csrf_token %}
+      <div class="vault-form-group">
+        <label>Title</label>
+        <input type="text" name="title" id="edit-title" required maxlength="200">
+      </div>
+      <div class="vault-form-group">
+        <label>Content <span class="muted" style="font-weight:400;font-size:0.8rem;">(decrypted for editing)</span></label>
+        <textarea name="content" id="edit-content" rows="10" required></textarea>
+        <div class="vd-char-counter"><span id="edit-char-count">0</span> characters</div>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <button type="submit" class="vault-btn">🔐 Encrypt &amp; Update</button>
+        <button type="button" class="vault-btn vault-btn-outline" onclick="closeEditModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Delete confirm modal ────────────────────────────────────── -->
+<div class="vd-modal-overlay" id="deleteModalOverlay" onclick="closeDeleteModal()">
+  <div class="vd-modal vd-modal-sm" onclick="event.stopPropagation()">
+    <div class="vd-modal-header">
+      <h3>Delete Entry</h3>
+      <button class="vd-modal-close" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <p id="deleteModalMsg" style="margin-bottom:1.5rem;color:var(--text);"></p>
+    <form method="POST" id="deleteForm">
+      {% csrf_token %}
+      <div style="display:flex;gap:0.75rem;">
+        <button type="submit" class="vault-btn vault-btn-danger">Delete Permanently</button>
+        <button type="button" class="vault-btn vault-btn-outline" onclick="closeDeleteModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Panel switching
+function showPanel(id) {
+  document.querySelectorAll('.vd-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.vd-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  const idx = id === 'list' ? 0 : 1;
+  document.querySelectorAll('.vd-nav-btn')[idx].classList.add('active');
+}
+
+// Character counters
+function bindCounter(textareaId, counterId) {
+  const ta = document.getElementById(textareaId);
+  const ct = document.getElementById(counterId);
+  if (!ta || !ct) return;
+  const update = () => ct.textContent = ta.value.length;
+  ta.addEventListener('input', update);
+  update();
+}
+bindCounter('new-content', 'new-char-count');
+bindCounter('edit-content', 'edit-char-count');
+
+// Edit modal
+function openEditModal(id, title, content) {
+  document.getElementById('editForm').action = '/vault/edit/' + id;
+  document.getElementById('edit-title').value = title;
+  document.getElementById('edit-content').value = content;
+  document.getElementById('edit-char-count').textContent = content.length;
+  document.getElementById('editModalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeEditModal() {
+  document.getElementById('editModalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Delete modal
+function confirmDelete(id, title) {
+  document.getElementById('deleteForm').action = '/vault/delete/' + id;
+  document.getElementById('deleteModalMsg').textContent =
+    'Are you sure you want to permanently delete "' + title + '"? This cannot be undone.';
+  document.getElementById('deleteModalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close modals on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeEditModal(); closeDeleteModal(); }
+});
+
+// Auto-dismiss alerts
+document.querySelectorAll('.vault-alert').forEach(el => {
+  setTimeout(() => el.style.opacity = '0', 3500);
+  setTimeout(() => el.remove(), 4000);
+});
+
+// Open new entry panel if redirected with ?new=1
+if (new URLSearchParams(location.search).get('new') === '1') showPanel('new');
+</script>
+{% endblock %}

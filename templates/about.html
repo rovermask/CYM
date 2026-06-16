@@ -1,39 +1,163 @@
 {% extends 'base.html' %}
 
-{% block title %}About Us{% endblock title %}
+{% block title %}About Us{% endblock %}
 
-{% block stylesheet %}
-<link rel="stylesheet" href="../static/stylesheet_about.css">
-<link rel="stylesheet" href="../static/stylesheet_about2.css">
-{% endblock stylesheet %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_about.css">
+{% endblock %}
 
+{% block header %}
+<div class="about-hero">
+  <div class="about-hero-inner">
+    <p class="section-label">// About CryptYourMind</p>
+    <h1>We Make <span class="accent">Cryptography</span><br>Click for Everyone</h1>
+    <p class="about-hero-sub">
+      A free, open educational platform built to demystify the algorithms
+      protecting your data every single day.
+    </p>
+  </div>
+  <div class="about-hero-grid" aria-hidden="true">
+    <span>AES</span><span>RSA</span><span>ECC</span><span>SHA</span>
+    <span>DES</span><span>ECDH</span><span>TLS</span><span>DSA</span>
+    <span>ChaCha</span><span>PGP</span><span>HMAC</span><span>CBC</span>
+  </div>
+</div>
+{% endblock %}
 
 {% block body %}
-<center>
-    <h1>What is CryptYourMind?</h1>
-    <div id="CYMIntro">
-        <p>
-            Crypt your mind is an educational site providing you information about crytography.Thus helping students and curious people to delve deep into cryptography.
-            We provide simplified learning experience and a user friendly atmosphere.
-        </p>
-    </div>
-    <h1>Our Motto</h1>
-</center>
-<center>
-    <div class="container">
-        <div class="box" id="box1">
-            <h3>Be With Us</h3>
+<div class="about-wrap">
 
+  <!-- Mission -->
+  <section class="about-section">
+    <div class="about-2col">
+      <div>
+        <p class="section-label">// Our Mission</p>
+        <h2>Cryptography is for <span class="accent">Everyone</span></h2>
+        <p>
+          CryptYourMind was built on a simple belief — the algorithms securing your
+          messages, passwords, and financial transactions should not be a mystery
+          locked behind academic papers and dense textbooks.
+        </p>
+        <p>
+          We translate complex mathematical concepts into clear, visual explanations,
+          interactive tools, and real worked examples — so students, developers, and
+          the simply curious can actually <em>understand</em> what's happening under the hood.
+        </p>
+      </div>
+      <div class="about-stat-grid">
+        <div class="about-stat-card">
+          <span class="about-stat-number accent">10+</span>
+          <span class="about-stat-label">Algorithms Documented</span>
         </div>
-        <div class="box" id="box2">
-            <h3>Gain Knowledge</h3>
+        <div class="about-stat-card">
+          <span class="about-stat-number accent">2</span>
+          <span class="about-stat-label">Encryption Families</span>
         </div>
-        <div class="box" id="box3">
-            <h3>Be Secure</h3>
+        <div class="about-stat-card">
+          <span class="about-stat-number accent">∞</span>
+          <span class="about-stat-label">Free to Use</span>
         </div>
+        <div class="about-stat-card">
+          <span class="about-stat-number accent">0</span>
+          <span class="about-stat-label">Ads or Tracking</span>
+        </div>
+      </div>
     </div>
-    <div>
-        <h3>CRYPTOGRAPHY ZINDABAD</h3>
+  </section>
+
+  <hr class="divider">
+
+  <!-- What We Offer -->
+  <section class="about-section">
+    <p class="section-label" style="text-align:center;">// Platform Features</p>
+    <h2 style="text-align:center;margin-bottom:2rem;">What CYM Offers</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h4>Deep Documentation</h4>
+        <p>
+          Every algorithm covered with history, mathematical foundations,
+          step-by-step operation breakdowns, real-world applications, and
+          known weaknesses.
+        </p>
+        <a href="/symmetric" class="feature-link">Browse Docs →</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h4>Live Encryption Tools</h4>
+        <p>
+          Encrypt your own text in real time using Caesar Cipher, Vigenère,
+          RSA, Atbash, ROT13, and Swapping Cipher — directly in your browser,
+          no installs needed.
+        </p>
+        <a href="/tools" class="feature-link">Open Tools →</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h4>Worked Examples</h4>
+        <p>
+          Side-by-side encryption walkthroughs for classic and modern algorithms,
+          showing exactly how plaintext transforms into ciphertext step by step.
+        </p>
+        <a href="/examples" class="feature-link">See Examples →</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h4>The Vault</h4>
+        <p>
+          Your personal, encrypted notes space. Store sensitive text securely
+          in our database — the only non-educational feature on the platform,
+          built for individual users.
+        </p>
+        <a href="/vault" class="feature-link">Open Vault →</a>
+      </div>
     </div>
-</center>
-{% endblock body %}
+  </section>
+
+  <hr class="divider">
+
+  <!-- Core Values -->
+  <section class="about-section">
+    <p class="section-label" style="text-align:center;">// Our Principles</p>
+    <h2 style="text-align:center;margin-bottom:2rem;">What We Stand For</h2>
+    <div class="motto-grid">
+      <div class="motto-card">
+        <div class="motto-number">01</div>
+        <h4>Be With Us</h4>
+        <p>A growing, open community where learners at every level are welcome — from first-time students to seasoned security professionals.</p>
+      </div>
+      <div class="motto-card">
+        <div class="motto-number">02</div>
+        <h4>Gain Knowledge</h4>
+        <p>We believe in depth, not just breadth. Every explanation is built to give you a real, working understanding — not just surface-level familiarity.</p>
+      </div>
+      <div class="motto-card">
+        <div class="motto-number">03</div>
+        <h4>Be Secure</h4>
+        <p>Understanding cryptography is the first step to building safer software, making better security decisions, and protecting the people who depend on your code.</p>
+      </div>
+    </div>
+    <div class="motto-banner">
+      <span class="mono accent">CRYPTOGRAPHY ZINDABAD</span>
+      <p class="muted" style="font-size:0.85rem;margin:0.35rem 0 0;">Long live cryptography — and long live curiosity.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CTA -->
+  <section class="about-section about-cta">
+    <h2>Ready to Start <span class="accent">Learning</span>?</h2>
+    <p>
+      Dive into our documentation, run the live tools, or browse worked examples.
+      Every feature is free — forever.
+    </p>
+    <div class="about-cta-buttons">
+      <a href="/symmetric" class="btn btn-primary">Read the Docs</a>
+      <a href="/tools" class="btn btn-outline">Try the Tools</a>
+      <a href="/examples" class="btn btn-outline">See Examples</a>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

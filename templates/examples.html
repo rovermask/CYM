@@ -1,56 +1,330 @@
 {% extends 'base.html' %}
 
-{% block title %}Examples{% endblock title %}
+{% block title %}Examples{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_ex.css">
+{% endblock %}
 
-{% block stylesheet %}
-<link rel="stylesheet" href="../static/stylesheet_docs.css">
-<link rel="stylesheet" href="../static/stylesheet_example2.css">
-{% endblock stylesheet %}
-
-
+{% block header %}
+<div class="ex-hero">
+  <div class="ex-hero-inner">
+    <p class="section-label">// Worked Examples</p>
+    <h1>See the Algorithms <span class="accent">In Action</span></h1>
+    <p>
+      Step-by-step walkthroughs showing exactly how plaintext transforms into ciphertext.
+      Each example uses real values so you can verify by hand.
+    </p>
+  </div>
+</div>
+{% endblock %}
 
 {% block body %}
-<center>
-    <h1>Examples Of Cryptography Algorithm</h1>
-</center>
-<div class="container">
-    <div class="box" id="box1">
-        <h3>Caesar Cipher Encryption</h3>
-        <p>Text : ATTACKATONCE</p>
-        <p>Shift: 4</p>
-        <p>Cipher: EXXEGOEXSRGI</p>
+<div class="ex-wrap">
+
+  <!-- Tab navigation -->
+  <div class="ex-tabs" role="tablist">
+    <button class="ex-tab active" onclick="switchTab(event,'symmetric')" role="tab">Symmetric</button>
+    <button class="ex-tab" onclick="switchTab(event,'asymmetric')" role="tab">Asymmetric</button>
+    <button class="ex-tab" onclick="switchTab(event,'classical')" role="tab">Classical / Historical</button>
+  </div>
+
+  <!-- ── SYMMETRIC EXAMPLES ──────────────────── -->
+  <div class="ex-panel active" id="panel-symmetric">
+
+    <div class="ex-card" id="ex-aes">
+      <div class="ex-card-header">
+        <div>
+          <h3>AES-128 Encryption</h3>
+          <div class="ex-badges">
+            <span class="badge badge-green">Modern</span>
+            <span class="badge badge-blue">Block Cipher</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Plaintext</label>
+            <code>Two One Nine Two</code>
+          </div>
+          <div class="ex-io-arrow">→</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Ciphertext (hex)</label>
+            <code>29C3505F571420F6<br>402299B31A02D73A</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Key (128-bit)</label>
+            <code>Thats my Kung Fu</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>Plaintext is written into a 4×4 byte state matrix (column-major order).</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span><strong>AddRoundKey</strong> — XOR state with the original key schedule.</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span><strong>SubBytes</strong> — each byte is replaced via the AES S-box (non-linear substitution).</span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span><strong>ShiftRows</strong> — row 0 unchanged, row 1 shifted left 1, row 2 by 2, row 3 by 3.</span></div>
+          <div class="ex-step"><span class="ex-step-n">5</span><span><strong>MixColumns</strong> — each column multiplied by a fixed polynomial in GF(2⁸).</span></div>
+          <div class="ex-step"><span class="ex-step-n">6</span><span>Rounds 1–9 repeat steps 3–5 with new round keys; Round 10 skips MixColumns.</span></div>
+        </div>
+        <a href="/symmetric#aes" class="feature-link">Read full AES docs →</a>
+      </div>
     </div>
-    <div class="box" id="box2">
-        <h3>Mono-alphabetic Encryption</h3>
-        <p>Text : Hello World</p>
-        <p>Key: Key</p>
-        <p>Cipher: AJOOS YSDOM</p>
+
+    <div class="ex-card" id="ex-des">
+      <div class="ex-card-header">
+        <div>
+          <h3>DES Encryption</h3>
+          <div class="ex-badges">
+            <span class="badge badge-red">Deprecated</span>
+            <span class="badge badge-blue">Block Cipher</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Plaintext (hex)</label>
+            <code>123456ABCD132536</code>
+          </div>
+          <div class="ex-io-arrow">→</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Ciphertext (hex)</label>
+            <code>C0B7A8D05F3A829C</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Key (hex)</label>
+            <code>AABB09182736CCDD</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>64-bit block undergoes an <strong>Initial Permutation (IP)</strong> — bits are rearranged.</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span>Block is split into 32-bit halves L₀ and R₀.</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span><strong>16 Feistel Rounds</strong>: Lₙ = Rₙ₋₁ ; Rₙ = Lₙ₋₁ XOR F(Rₙ₋₁, Kₙ)</span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span>F expands R from 32→48 bits, XORs with round key, passes through 8 S-boxes, then permutation P.</span></div>
+          <div class="ex-step"><span class="ex-step-n">5</span><span>After 16 rounds, halves are swapped and <strong>Final Permutation (FP)</strong> (inverse of IP) is applied.</span></div>
+        </div>
+        <a href="/symmetric#des" class="feature-link">Read full DES docs →</a>
+      </div>
     </div>
-    <div class="box" id="box3">
-        <h3>Poly-alphabetic Encryption</h3>
-        <p>Text : GEEKSFORGEEKS</p>
-        <p>Key: AYUSH</p>
-        <p>Cipher: GCYCZFMLYLEIM</p>
+
+  </div><!-- /panel-symmetric -->
+
+  <!-- ── ASYMMETRIC EXAMPLES ─────────────────── -->
+  <div class="ex-panel" id="panel-asymmetric">
+
+    <div class="ex-card" id="ex-rsa">
+      <div class="ex-card-header">
+        <div>
+          <h3>RSA Encryption (Small Example)</h3>
+          <div class="ex-badges">
+            <span class="badge badge-green">Widely Used</span>
+            <span class="badge badge-blue">Public-Key</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Plaintext</label>
+            <code>HI (M = 72,73)</code>
+          </div>
+          <div class="ex-io-arrow">→</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Ciphertext C</label>
+            <code>1394</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Keys</label>
+            <code>P=53, Q=59<br>n=3127, e=3, d=2011</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>Choose two primes: P = 53, Q = 59</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span>n = P × Q = 3127 &nbsp;|&nbsp; φ(n) = (P-1)(Q-1) = 3016</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span>Choose e = 3 (gcd(3, 3016) = 1) → Public key (e=3, n=3127)</span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span>Find d such that d × e ≡ 1 (mod φ(n)) → d = 2011 → Private key</span></div>
+          <div class="ex-step"><span class="ex-step-n">5</span><span>Encrypt: C = M^e mod n = 72^3 mod 3127 = <strong>1394</strong></span></div>
+          <div class="ex-step"><span class="ex-step-n">6</span><span>Decrypt: M = C^d mod n = 1394^2011 mod 3127 = <strong>72</strong> ✓</span></div>
+        </div>
+        <a href="/asymmetric#rsa" class="feature-link">Read full RSA docs →</a>
+      </div>
     </div>
-    <div class="box" id="box4">
-        <h3>DES</h3>
-        <p>Text : 123456ABCD132536</p>
-        <p>Key: AABB09182736CCDD</p>
-        <p>Cipher: C0B7A8D05F3A829C</p>
+
+    <div class="ex-card" id="ex-dh">
+      <div class="ex-card-header">
+        <div>
+          <h3>Diffie-Hellman Key Exchange</h3>
+          <div class="ex-badges">
+            <span class="badge badge-green">Key Exchange</span>
+            <span class="badge badge-blue">Asymmetric</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Public Params</label>
+            <code>p = 23 (prime)<br>g = 5 (generator)</code>
+          </div>
+          <div class="ex-io-arrow">↔</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Shared Secret</label>
+            <code>2</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Private Keys</label>
+            <code>Alice: a = 6<br>Bob:   b = 15</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>Alice computes: A = g^a mod p = 5^6 mod 23 = <strong>8</strong> (sends to Bob)</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span>Bob computes: B = g^b mod p = 5^15 mod 23 = <strong>19</strong> (sends to Alice)</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span>Alice's secret: s = B^a mod p = 19^6 mod 23 = <strong>2</strong></span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span>Bob's secret: s = A^b mod p = 8^15 mod 23 = <strong>2</strong> ✓ Same secret!</span></div>
+          <div class="ex-step"><span class="ex-step-n">5</span><span>An eavesdropper sees p, g, A=8, B=19 but cannot derive s without solving the Discrete Logarithm Problem.</span></div>
+        </div>
+        <a href="/asymmetric#dh" class="feature-link">Read full DH docs →</a>
+      </div>
     </div>
-    <div class="box" id="box5">
-        <h3>AES</h3>
-        <p>Text : Two One Nine Two</p>
-        <p>Key: Thats my Kung Fu</p>
-        <p>Cipher: 29C3505F571420F6402299B31A02D73A</p>
+
+  </div><!-- /panel-asymmetric -->
+
+  <!-- ── CLASSICAL EXAMPLES ──────────────────── -->
+  <div class="ex-panel" id="panel-classical">
+
+    <div class="ex-card" id="ex-caesar">
+      <div class="ex-card-header">
+        <div>
+          <h3>Caesar Cipher</h3>
+          <div class="ex-badges">
+            <span class="badge badge-yellow">Classical</span>
+            <span class="badge badge-yellow">Substitution</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Plaintext</label>
+            <code>ATTACKATONCE</code>
+          </div>
+          <div class="ex-io-arrow">→</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Ciphertext</label>
+            <code>EXXEGOEXSRGI</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Shift Key</label>
+            <code>4</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>Each letter is shifted 4 positions forward in the alphabet.</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span>A→E, T→X, T→X, A→E, C→G, K→O, A→E, T→X, O→S, N→R, C→G, E→I</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span>Formula: C = (P + key) mod 26 &nbsp;|&nbsp; Decrypt: P = (C - key + 26) mod 26</span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span>Caesar cipher has only 25 possible keys — trivially broken by brute force.</span></div>
+        </div>
+        <a href="/tools" class="feature-link">Try it in the tools →</a>
+      </div>
     </div>
-    <div class="box" id="box6">
-        <h3>RSA</h3>
-        <p>Text : HI</p>
-        <p>Public Key: P=53  Q=59  n = P*Q = 3127</p>
-        <p>Private Key: 2011</p>
-        <p>Cipher: 1394</p>
+
+    <div class="ex-card" id="ex-vigenere">
+      <div class="ex-card-header">
+        <div>
+          <h3>Vigenère Cipher</h3>
+          <div class="ex-badges">
+            <span class="badge badge-yellow">Classical</span>
+            <span class="badge badge-blue">Polyalphabetic</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Plaintext</label>
+            <code>GEEKSFORGEEKS</code>
+          </div>
+          <div class="ex-io-arrow">→</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Ciphertext</label>
+            <code>GCYCZFMLYLEIM</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Key</label>
+            <code>AYUSH</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>Key "AYUSH" is repeated to match plaintext length: A Y U S H A Y U S H A Y U</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span>Each letter pair (plaintext, key) is added mod 26: G+A=G, E+Y=C, E+U=Y, K+S=C, S+H=Z...</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span>Formula: Cᵢ = (Pᵢ + Kᵢ) mod 26 per position.</span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span>Unlike Caesar, different key letters shift each position differently — defeating frequency analysis.</span></div>
+        </div>
+        <a href="/tools" class="feature-link">Try it in the tools →</a>
+      </div>
     </div>
-</div>
-{% endblock body %}
+
+    <div class="ex-card" id="ex-mono">
+      <div class="ex-card-header">
+        <div>
+          <h3>Monoalphabetic Substitution</h3>
+          <div class="ex-badges">
+            <span class="badge badge-yellow">Classical</span>
+            <span class="badge badge-yellow">Substitution</span>
+          </div>
+        </div>
+        <button class="ex-toggle" onclick="toggleCard(this)" aria-expanded="true">▲</button>
+      </div>
+      <div class="ex-card-body">
+        <div class="ex-io-grid">
+          <div class="ex-io-box">
+            <label>Plaintext</label>
+            <code>Hello World</code>
+          </div>
+          <div class="ex-io-arrow">→</div>
+          <div class="ex-io-box ex-io-cipher">
+            <label>Ciphertext</label>
+            <code>AJOOS YSDOM</code>
+          </div>
+          <div class="ex-io-box">
+            <label>Key</label>
+            <code>Key</code>
+          </div>
+        </div>
+        <div class="ex-steps">
+          <div class="ex-step"><span class="ex-step-n">1</span><span>Build a substitution alphabet starting with unique letters of "KEY": K E Y...</span></div>
+          <div class="ex-step"><span class="ex-step-n">2</span><span>Append remaining unused letters in order: K E Y A B C D F G H I J L M N O P Q R S T U V W X Z</span></div>
+          <div class="ex-step"><span class="ex-step-n">3</span><span>Map each plaintext letter to its position in the substitution alphabet.</span></div>
+          <div class="ex-step"><span class="ex-step-n">4</span><span>The same plaintext letter always maps to the same cipher letter — vulnerable to frequency analysis.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-classical -->
+
+</div><!-- /ex-wrap -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchTab(e, panelId) {
+  document.querySelectorAll('.ex-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ex-panel').forEach(p => p.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById('panel-' + panelId).classList.add('active');
+}
+function toggleCard(btn) {
+  const body = btn.closest('.ex-card').querySelector('.ex-card-body');
+  const expanded = btn.getAttribute('aria-expanded') === 'true';
+  body.style.display = expanded ? 'none' : 'block';
+  btn.textContent = expanded ? '▼' : '▲';
+  btn.setAttribute('aria-expanded', String(!expanded));
+}
+</script>
+{% endblock %}
