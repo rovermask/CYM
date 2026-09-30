@@ -30,6 +30,7 @@
     </a>
 
     <div class="nav-right">
+      {% if user.is_authenticated %}
       <ul class="nav-links" id="navLinks">
         <li>
           <a href="/" {% if request.path == '/' %}class="nav-active" aria-current="page"{% endif %}>Home</a>
@@ -58,15 +59,21 @@
         </li>
         {% if user.is_admin %}<li><a href="/manage/" {% if '/manage' in request.path %}class="nav-active"{% endif %}>Admin</a></li>{% endif %}
         <li>
-          <a href="{% if user.is_authenticated %}/vault/dashboard{% else %}/vault{% endif %}"
-             class="vault-link {% if '/vault' in request.path %}nav-active{% endif %}">⬡ {% if user.is_authenticated %}My Vault{% else %}The Vault{% endif %}</a>
+          <a href="/vault/dashboard" class="vault-link {% if '/vault' in request.path %}nav-active{% endif %}">⬡ My Vault</a>
+        </li>
+        <li class="nav-account">
+          <form method="post" action="/vault/logout">
+            {% csrf_token %}
+            <button type="submit" class="nav-signout" title="Signed in as {{ user.email }}">Sign out</button>
+          </form>
         </li>
       </ul>
+      {% endif %}
 
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">◐</button>
-      <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
+      {% if user.is_authenticated %}<button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
-      </button>
+      </button>{% endif %}
     </div>
   </nav>
 
@@ -81,14 +88,14 @@
       <p>
         <span class="accent">CryptYourMind</span> — Educating the next generation of cryptographers.
       </p>
-      <nav class="footer-nav" aria-label="Footer">
+      {% if user.is_authenticated %}<nav class="footer-nav" aria-label="Footer">
         <a href="/">Home</a>
         <a href="/symmetric">Symmetric</a>
         <a href="/asymmetric">Asymmetric</a>
         <a href="/examples">Examples</a>
         <a href="/tools">Tools</a>
         <a href="/about">About</a>
-      </nav>
+      </nav>{% endif %}
       <p class="muted" style="font-size:0.8rem;margin-top:0.75rem;">
         All algorithm demonstrations are for educational purposes only.
       </p>
@@ -106,16 +113,17 @@
       onScroll();
 
       function setMenu(open) {
+        if (!links || !toggle) return;
         links.classList.toggle('open', open);
         toggle.setAttribute('aria-expanded', String(open));
       }
-      toggle.addEventListener('click', function () { setMenu(!links.classList.contains('open')); });
+      if (toggle && links) toggle.addEventListener('click', function () { setMenu(!links.classList.contains('open')); });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
       document.addEventListener('click', function (e) {
         if (!nav.contains(e.target)) setMenu(false);
       });
       // Close the mobile menu after picking a link (except the dropdown trigger)
-      links.addEventListener('click', function (e) {
+      if (links) links.addEventListener('click', function (e) {
         var a = e.target.closest('a');
         if (a && !a.classList.contains('dropdown-trigger')) setMenu(false);
       });

@@ -39,7 +39,12 @@ class CipherTests(SimpleTestCase):
             ra.rsa_algo("日本語" * 1000 + "\U0001F600")
 
 
+@override_settings(CYM_BACKEND='memory')
 class ToolViewTests(SimpleTestCase):
+    def setUp(self):
+        reset_backend()
+        self.client.post(reverse('vault_session'), {'id_token': 'u0|t@example.com|t'})
+
     def post(self, **data):
         return self.client.post(reverse('encrypt_data'), data,
                                 headers={'X-Requested-With': 'XMLHttpRequest'})
@@ -64,8 +69,46 @@ class ToolViewTests(SimpleTestCase):
                              fetch_redirect_response=False)
 
     def test_public_pages_render(self):
-        for name in ('home', 'documentaion', 'examples', 'about', 'symmetric', 'asymmetric', 'tools', 'vault'):
+        for name in ('home', 'documentaion', 'examples', 'about', 'symmetric', 'asymmetric', 'tools'):
             self.assertEqual(self.client.get(reverse(name)).status_code, 200, name)
+
+
+@override_settings(CYM_BACKEND='memory')
+class SiteGateTests(SimpleTestCase):
+    def setUp(self):
+        reset_backend()
+
+    def test_every_page_redirects_to_login_when_signed_out(self):
+        for name in ('home', 'documentaion', 'examples', 'about', 'symmetric', 'asymmetric', 'tools',
+                     'vault', 'vault_dashboard'):
+            r = self.client.get(reverse(name))
+            self.assertEqual(r.status_code, 302, name)
+            self.assertTrue(r['Location'].startswith('/login'), name)
+
+    def test_next_is_preserved_and_login_page_is_public(self):
+        self.assertEqual(self.client.get('/tools')['Location'], '/login?next=/tools')
+        self.assertEqual(self.client.get(reverse('login')).status_code, 200)
+        self.assertEqual(self.client.get('/static/stylesheet_base.css').status_code, 200)
+
+    def test_ajax_gets_401_json(self):
+        r = self.client.post(reverse('encrypt_data'), {}, headers={'X-Requested-With': 'XMLHttpRequest'})
+        self.assertEqual(r.status_code, 401)
+        self.assertEqual(r.json()['login'], '/login')
+
+    def test_login_redirects_to_safe_next_only(self):
+        ok = self.client.post(reverse('vault_session'), {'id_token': 'u1|a@b.co|a', 'next': '/tools'})
+        self.assertEqual(ok.json()['next'], '/tools')
+        for evil in ('https://evil.example', '//evil.example', 'javascript:alert(1)'):
+            r = self.client.post(reverse('vault_session'), {'id_token': 'u1|a@b.co|a', 'next': evil})
+            self.assertEqual(r.json()['next'], '/', evil)
+
+    def test_signed_in_user_skips_login_page_and_sees_nav(self):
+        self.client.post(reverse('vault_session'), {'id_token': 'u1|a@b.co|a'})
+        self.assertRedirects(self.client.get(reverse('login')), '/', fetch_redirect_response=False)
+        self.assertContains(self.client.get('/'), 'Sign out')
+
+    def test_signed_out_login_page_hides_site_nav(self):
+        self.assertNotContains(self.client.get(reverse('login')), 'href="/tools"')
 
 
 def _token(uid, email, name, admin=False):
@@ -84,10 +127,11 @@ class VaultTests(SimpleTestCase):
     def test_session_exchange_and_dashboard_guard(self):
         self.assertEqual(self.client.get(reverse('vault_dashboard')).status_code, 302)
         r = self.login()
-        self.assertEqual(r.json(), {'ok': True, 'next': '/vault/dashboard'})
+        self.assertEqual(r.json(), {'ok': True, 'next': '/'})
         self.assertEqual(self.client.get(reverse('vault_dashboard')).status_code, 200)
         self.assertRedirects(self.client.get(reverse('vault')), reverse('vault_dashboard'),
                              fetch_redirect_response=False)
+        self.assertRedirects(self.client.get(reverse('login')), '/', fetch_redirect_response=False)
 
     def test_bad_token_rejected(self):
         r = self.client.post(reverse('vault_session'), {'id_token': 'garbage'})

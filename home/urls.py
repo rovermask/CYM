@@ -13,6 +13,7 @@ urlpatterns = [
     path("encrypt_data", views.encrypt_data,  name="encrypt_data"),
 
     # ── Vault (Firebase Auth + Firestore) ────────────────────────────────────
+    path("login",                    views.login_page,      name="login"),
     path("vault",                    views.vault,           name="vault"),
     path("vault/session",            views.vault_session,   name="vault_session"),
     path("vault/logout",             views.vault_logout,    name="vault_logout"),

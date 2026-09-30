@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}The Vault{% endblock %}
+{% block title %}Sign in{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="/static/stylesheet_vault.css">
@@ -16,8 +16,8 @@
 
     <div class="vault-icon">
       <div class="vault-icon-ring">⬡</div>
-      <h1 class="vault-title" style="font-family:var(--font-display);">The Vault</h1>
-      <p class="vault-subtitle">Your personal encrypted space</p>
+      <h1 class="vault-title" style="font-family:var(--font-display);">Welcome to CryptYourMind</h1>
+      <p class="vault-subtitle">Sign in or create a free account to explore the platform</p>
     </div>
 
     <div class="auth-card">
@@ -54,7 +54,7 @@
             <input type="password" id="login_password" name="password"
                    placeholder="••••••••" autocomplete="current-password" required>
           </div>
-          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">🔓 Unlock Vault</button>
+          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">🔓 Sign In</button>
           <p class="auth-alt">
             <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
           </p>
@@ -88,7 +88,7 @@
             <input type="password" id="signup_password2" name="password2"
                    placeholder="Repeat password" autocomplete="new-password" minlength="8" required>
           </div>
-          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">🔐 Create Account &amp; Generate Key</button>
+          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">🔐 Create Account</button>
           <p class="auth-alt">
             Already have an account? <button type="button" class="link-btn" onclick="switchTab('login')">Sign in →</button>
           </p>
@@ -98,9 +98,9 @@
 
     <div class="vault-notice">
       <strong>🔐 Encryption Notice</strong><br>
-      Sign-in is handled by Firebase Authentication. Notes are encrypted with AES-128 (Fernet)
+      An account is required to use CryptYourMind. Sign-in is handled by Firebase Authentication.
+      Your account also unlocks <em>The Vault</em>: notes are encrypted with AES-128 (Fernet)
       using a per-user key derived server-side, then stored in Firestore.
-      The Vault is the only non-educational feature on CryptYourMind — for personal use only.
       Do not store highly sensitive secrets.
     </div>
 
@@ -114,6 +114,7 @@
 {% if firebase_configured %}{{ firebase_web_config|json_script:"firebase-config" }}{% endif %}
 <script>
   const ACTIVE_TAB = '{{ active_tab }}';
+  const NEXT_URL = new URLSearchParams(location.search).get('next') || '/';
   const $ = id => document.getElementById(id);
 
   function switchTab(tab) {
@@ -160,7 +161,7 @@
 
   async function startSession(user, username) {
     const idToken = await user.getIdToken(true);
-    const body = new URLSearchParams({ id_token: idToken, username: username || '' });
+    const body = new URLSearchParams({ id_token: idToken, username: username || '', next: NEXT_URL });
     const res = await fetch('/vault/session', {
       method: 'POST',
       headers: { 'X-CSRFToken': document.querySelector('#csrfHolder [name=csrfmiddlewaretoken]').value },

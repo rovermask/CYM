@@ -4,6 +4,7 @@ from cryptography.fernet import InvalidToken
 from django.contrib import messages
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 import encryption_algorithms.rsa_algo          as ra
@@ -134,7 +135,7 @@ def vault_login_required(view):
     def wrapper(request, *args, **kwargs):
         user = SessionUser(request.session.get('vault_user'))
         if not user.is_authenticated:
-            return redirect('/vault')
+            return redirect('/login')
         request.vault_user = user
         return view(request, *args, **kwargs)
     return wrapper
@@ -161,12 +162,27 @@ def _profile(user):
 
 # ── Vault: auth pages ─────────────────────────────────────────────────────────
 
-def vault(request):
-    """Auth landing — Firebase's browser SDK signs the user in, then /vault/session verifies it."""
+def login_page(request):
+    """Sign-in / sign-up page. Firebase's browser SDK proves identity, then /vault/session verifies it."""
+    nxt = _safe_next(request, request.GET.get('next', ''))
     if SessionUser(request.session.get('vault_user')).is_authenticated:
-        return redirect('vault_dashboard')
+        return redirect(nxt)
     tab = request.GET.get('tab', 'login')
-    return render(request, 'vault.html', {'active_tab': tab if tab in ('login', 'signup') else 'login'})
+    return render(request, 'login.html', {
+        'active_tab': tab if tab in ('login', 'signup') else 'login',
+        'next': nxt,
+    })
+
+
+def vault(request):
+    return redirect('vault_dashboard')
+
+
+def _safe_next(request, value):
+    """Only allow same-site relative redirects (prevents open redirects)."""
+    if value and value.startswith('/') and not value.startswith('//')             and url_has_allowed_host_and_scheme(value, allowed_hosts={request.get_host()}):
+        return value
+    return '/'
 
 
 @require_POST
@@ -183,14 +199,14 @@ def vault_session(request):
     request.session.cycle_key()
     request.session['vault_user'] = {
         'uid': info['uid'], 'email': info['email'], 'username': name, 'is_admin': info['is_admin']}
-    return JsonResponse({'ok': True, 'next': '/vault/dashboard'})
+    return JsonResponse({'ok': True, 'next': _safe_next(request, request.POST.get('next', ''))})
 
 
 @require_POST
 def vault_logout(request):
     request.session.flush()
-    messages.success(request, 'You have been securely logged out.')
-    return redirect('vault')
+    messages.success(request, 'You have been signed out.')
+    return redirect('login')
 
 
 # ── Vault: dashboard ──────────────────────────────────────────────────────────
