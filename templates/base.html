@@ -1,57 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CryptYourMind — learn, explore and experiment with cryptography.">
   <title>{% block title %}{% endblock %} | CryptYourMind</title>
+  <script>
+    // Apply saved theme before first paint (avoids a flash)
+    (function () {
+      try {
+        var t = localStorage.getItem('cym-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="/static/stylesheet_base.css">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
+  <a href="#content" class="skip-link">Skip to content</a>
 
-  <nav id="mainNav">
-    <a href="/" class="nav-logo">
+  <nav id="mainNav" aria-label="Main">
+    <a href="/" class="nav-logo" aria-label="CryptYourMind home">
       <span class="bracket">[</span>CYM<span class="bracket">]</span>
     </a>
 
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-right">
+      <ul class="nav-links" id="navLinks">
+        <li>
+          <a href="/" {% if request.path == '/' %}class="nav-active" aria-current="page"{% endif %}>Home</a>
+        </li>
+        <li class="dropdown" id="docsDropdown">
+          <a href="/documentation"
+             class="dropdown-trigger {% if '/symmetric' in request.path or '/asymmetric' in request.path or '/documentation' in request.path %}nav-active{% endif %}"
+             aria-haspopup="true" aria-expanded="false"
+             onclick="toggleDropdown(event,'docsDropdown')">
+            Docs <span aria-hidden="true">▾</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="/documentation" {% if request.path == '/documentation' %}class="nav-active"{% endif %}>Overview</a></li>
+            <li><a href="/symmetric" {% if request.path == '/symmetric' %}class="nav-active"{% endif %}>Symmetric</a></li>
+            <li><a href="/asymmetric" {% if request.path == '/asymmetric' %}class="nav-active"{% endif %}>Asymmetric</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="/examples" {% if request.path == '/examples' %}class="nav-active" aria-current="page"{% endif %}>Examples</a>
+        </li>
+        <li>
+          <a href="/tools" {% if request.path == '/tools' or request.path == '/encrypt_data' %}class="nav-active" aria-current="page"{% endif %}>Tools</a>
+        </li>
+        <li>
+          <a href="/about" {% if request.path == '/about' %}class="nav-active" aria-current="page"{% endif %}>About</a>
+        </li>
+        {% if user.is_admin %}<li><a href="/manage/" {% if '/manage' in request.path %}class="nav-active"{% endif %}>Admin</a></li>{% endif %}
+        <li>
+          <a href="{% if user.is_authenticated %}/vault/dashboard{% else %}/vault{% endif %}"
+             class="vault-link {% if '/vault' in request.path %}nav-active{% endif %}">⬡ {% if user.is_authenticated %}My Vault{% else %}The Vault{% endif %}</a>
+        </li>
+      </ul>
 
-    <ul class="nav-links" id="navLinks">
-      <li>
-        <a href="/" {% if request.path == '/' %}class="nav-active"{% endif %}>Home</a>
-      </li>
-      <li class="dropdown" id="docsDropdown">
-        <a href="/documentation"
-           class="dropdown-trigger {% if '/symmetric' in request.path or '/asymmetric' in request.path or '/documentation' in request.path %}nav-active{% endif %}"
-           onclick="toggleDropdown(event,'docsDropdown')">
-          Docs <span>▾</span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="/documentation" {% if request.path == '/documentation' %}class="nav-active"{% endif %}>Overview</a></li>
-          <li><a href="/symmetric" {% if request.path == '/symmetric' %}class="nav-active"{% endif %}>Symmetric</a></li>
-          <li><a href="/asymmetric" {% if request.path == '/asymmetric' %}class="nav-active"{% endif %}>Asymmetric</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="/examples" {% if request.path == '/examples' %}class="nav-active"{% endif %}>Examples</a>
-      </li>
-      <li>
-        <a href="/tools" {% if request.path == '/tools' %}class="nav-active"{% endif %}>Tools</a>
-      </li>
-      <li>
-        <a href="/vault" class="vault-link {% if request.path == '/vault' %}nav-active{% endif %}">⬡ The Vault</a>
-      </li>
-      <li>
-        <a href="/about" {% if request.path == '/about' %}class="nav-active"{% endif %}>About</a>
-      </li>
-    </ul>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">◐</button>
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
   {% block header %}{% endblock %}
 
-  <main>
+  <main id="content">
     {% block body %}{% endblock %}
   </main>
 
@@ -60,7 +81,7 @@
       <p>
         <span class="accent">CryptYourMind</span> — Educating the next generation of cryptographers.
       </p>
-      <nav class="footer-nav">
+      <nav class="footer-nav" aria-label="Footer">
         <a href="/">Home</a>
         <a href="/symmetric">Symmetric</a>
         <a href="/asymmetric">Asymmetric</a>
@@ -75,21 +96,45 @@
   </footer>
 
   <script>
-    // Scroll nav behavior
-    window.addEventListener('scroll', () => {
-      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 30);
-    });
+    (function () {
+      var nav = document.getElementById('mainNav');
+      var links = document.getElementById('navLinks');
+      var toggle = document.getElementById('navToggle');
 
-    // Mobile toggle
-    document.getElementById('navToggle').addEventListener('click', () => {
-      document.getElementById('navLinks').classList.toggle('open');
-    });
+      function onScroll() { nav.classList.toggle('scrolled', window.scrollY > 10); }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
 
-    // Dropdown toggle on mobile
+      function setMenu(open) {
+        links.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+      }
+      toggle.addEventListener('click', function () { setMenu(!links.classList.contains('open')); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+      document.addEventListener('click', function (e) {
+        if (!nav.contains(e.target)) setMenu(false);
+      });
+      // Close the mobile menu after picking a link (except the dropdown trigger)
+      links.addEventListener('click', function (e) {
+        var a = e.target.closest('a');
+        if (a && !a.classList.contains('dropdown-trigger')) setMenu(false);
+      });
+
+      // Theme toggle
+      document.getElementById('themeToggle').addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('cym-theme', next); } catch (e) {}
+      });
+    })();
+
+    // On mobile the "Docs" link expands its submenu instead of navigating
     function toggleDropdown(e, id) {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 860) {
         e.preventDefault();
-        document.getElementById(id).classList.toggle('open');
+        var el = document.getElementById(id);
+        var open = el.classList.toggle('open');
+        e.currentTarget.setAttribute('aria-expanded', String(open));
       }
     }
   </script>

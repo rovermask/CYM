@@ -58,11 +58,11 @@ def rsa_algo(message):
     for char in message:
         code = ord(char)
         if code >= n:
-            # Character code exceeds n — skip or substitute
-            encrypted.append(str(code))
-        else:
-            enc_val = rsa_encrypt_char(code, e, n)
-            encrypted.append(str(enc_val))
+            raise ValueError(
+                f"Character {char!r} (code {code}) is outside the range this demo RSA can encrypt "
+                f"(codes below {n})."
+            )
+        encrypted.append(str(rsa_encrypt_char(code, e, n)))
 
     return ' '.join(encrypted)
 

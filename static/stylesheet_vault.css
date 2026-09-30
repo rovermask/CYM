@@ -16,7 +16,7 @@
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0, 220, 160, 0.04) 0%, transparent 70%);
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(var(--accent-rgb), 0.04) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -40,10 +40,10 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 2px solid rgba(0, 220, 160, 0.3);
-  background: rgba(0, 220, 160, 0.05);
+  border: 2px solid rgba(var(--accent-rgb), 0.3);
+  background: rgba(var(--accent-rgb), 0.05);
   font-size: 2rem;
-  box-shadow: 0 0 30px rgba(0, 220, 160, 0.1);
+  box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.1);
   animation: vaultPulse 3s ease-in-out infinite;
 }
 .vault-title {
@@ -91,7 +91,7 @@
 .auth-tab.active {
   color: var(--accent);
   border-bottom-color: var(--accent);
-  background: rgba(0,220,160,0.04);
+  background: rgba(var(--accent-rgb), 0.04);
 }
 
 /* Auth forms */
@@ -112,7 +112,7 @@
 }
 .vault-form-group input {
   width: 100%;
-  background: rgba(0,0,0,0.3);
+  background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-bright);
@@ -124,7 +124,7 @@
 }
 .vault-form-group input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(0, 220, 160, 0.15);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.15);
 }
 .vault-form-group input::placeholder { color: var(--text-muted); }
 
@@ -133,7 +133,7 @@
   padding: 0.85rem;
   margin-top: 0.5rem;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
   border: none;
   border-radius: var(--radius);
   font-family: var(--font-display);
@@ -142,21 +142,21 @@
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: all var(--transition);
-  box-shadow: 0 0 20px rgba(0, 220, 160, 0.25);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.25);
 }
 .vault-btn:hover {
   background: transparent;
   color: var(--accent);
   border: 1px solid var(--accent);
-  box-shadow: 0 0 30px rgba(0, 220, 160, 0.35);
+  box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.35);
 }
 
 /* Vault info notice */
 .vault-notice {
   margin-top: 1.5rem;
   padding: 1rem;
-  background: rgba(0, 220, 160, 0.05);
-  border: 1px solid rgba(0, 220, 160, 0.15);
+  background: rgba(var(--accent-rgb), 0.05);
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
   border-radius: var(--radius);
   font-size: 0.82rem;
   color: var(--text-muted);
@@ -166,8 +166,8 @@
 .vault-notice strong { color: var(--accent); }
 
 @keyframes vaultPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(0, 220, 160, 0.1); }
-  50%       { box-shadow: 0 0 40px rgba(0, 220, 160, 0.25); }
+  0%, 100% { box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1); }
+  50%       { box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.25); }
 }
 /* ── Additional vault auth styles ─────────────────────────── */
 
@@ -208,3 +208,7 @@
 .vault-btn {
   box-sizing: border-box;
 }
+/* auth helpers */
+.auth-alt { text-align: center; margin: 1rem 0 0; font-size: 0.85rem; color: var(--text-muted); }
+.link-btn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font: inherit; font-weight: 600; }
+.link-btn:hover { color: var(--accent-2); text-decoration: underline; }

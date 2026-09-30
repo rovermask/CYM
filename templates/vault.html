@@ -7,40 +7,43 @@
 {% endblock %}
 
 {% block header %}
-<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+<div class="nav-spacer"></div>
 {% endblock %}
 
 {% block body %}
 <div class="vault-page">
   <div class="vault-container">
 
-    <!-- Icon + title -->
     <div class="vault-icon">
       <div class="vault-icon-ring">⬡</div>
       <h1 class="vault-title" style="font-family:var(--font-display);">The Vault</h1>
       <p class="vault-subtitle">Your personal encrypted space</p>
     </div>
 
-    <!-- Auth card -->
     <div class="auth-card">
-      <div class="auth-tabs">
-        <button class="auth-tab" id="loginTab"  onclick="switchTab('login')">Sign In</button>
-        <button class="auth-tab" id="signupTab" onclick="switchTab('signup')">Create Account</button>
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab" id="loginTab" role="tab" onclick="switchTab('login')">Sign In</button>
+        <button type="button" class="auth-tab" id="signupTab" role="tab" onclick="switchTab('signup')">Create Account</button>
       </div>
 
-      <!-- Flash messages (shown above whichever form is active) -->
-      {% if messages %}
-        <div style="padding:1rem 2rem 0;">
-          {% for message in messages %}
-            <div class="vault-alert vault-alert-{{ message.tags }}">{{ message }}</div>
-          {% endfor %}
+      <div id="flash" style="padding:1rem 2rem 0;{% if not messages %}display:none;{% endif %}">
+        {% for message in messages %}
+          <div class="vault-alert vault-alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+
+      {% if not firebase_configured %}
+      <div style="padding:1rem 2rem 0;">
+        <div class="vault-alert vault-alert-error">
+          Firebase isn't configured yet. Set <code>FIREBASE_WEB_CONFIG</code> and a service account
+          (see <code>.env.example</code>) to enable sign-in.
         </div>
+      </div>
       {% endif %}
 
       <!-- ── Login form ───────────────────────── -->
       <div class="auth-panel" id="loginPanel">
-        <form method="POST" action="/vault/login">
-          {% csrf_token %}
+        <form id="loginForm" novalidate>
           <div class="vault-form-group">
             <label for="login_email">Email Address</label>
             <input type="email" id="login_email" name="email"
@@ -51,23 +54,19 @@
             <input type="password" id="login_password" name="password"
                    placeholder="••••••••" autocomplete="current-password" required>
           </div>
-          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">
-            🔓 Unlock Vault
-          </button>
-          <p style="text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--text-muted);">
-            No account?
-            <button type="button" onclick="switchTab('signup')"
-              style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.82rem;padding:0;">
-              Create one →
-            </button>
+          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">🔓 Unlock Vault</button>
+          <p class="auth-alt">
+            <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
+          </p>
+          <p class="auth-alt">
+            No account? <button type="button" class="link-btn" onclick="switchTab('signup')">Create one →</button>
           </p>
         </form>
       </div>
 
       <!-- ── Signup form ──────────────────────── -->
       <div class="auth-panel" id="signupPanel">
-        <form method="POST" action="/vault/register">
-          {% csrf_token %}
+        <form id="signupForm" novalidate>
           <div class="vault-form-group">
             <label for="signup_username">Username</label>
             <input type="text" id="signup_username" name="username"
@@ -82,59 +81,153 @@
           <div class="vault-form-group">
             <label for="signup_password1">Password</label>
             <input type="password" id="signup_password1" name="password1"
-                   placeholder="Min. 8 characters" autocomplete="new-password"
-                   minlength="8" required>
+                   placeholder="Min. 8 characters" autocomplete="new-password" minlength="8" required>
           </div>
           <div class="vault-form-group">
             <label for="signup_password2">Confirm Password</label>
             <input type="password" id="signup_password2" name="password2"
-                   placeholder="Repeat password" autocomplete="new-password"
-                   minlength="8" required>
+                   placeholder="Repeat password" autocomplete="new-password" minlength="8" required>
           </div>
-          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">
-            🔐 Create Account &amp; Generate Key
-          </button>
-          <p style="text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--text-muted);">
-            Already have an account?
-            <button type="button" onclick="switchTab('login')"
-              style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.82rem;padding:0;">
-              Sign in →
-            </button>
+          <button type="submit" class="vault-btn" style="margin-top:0.75rem;">🔐 Create Account &amp; Generate Key</button>
+          <p class="auth-alt">
+            Already have an account? <button type="button" class="link-btn" onclick="switchTab('login')">Sign in →</button>
           </p>
         </form>
       </div>
     </div>
 
-    <!-- Privacy notice -->
     <div class="vault-notice">
       <strong>🔐 Encryption Notice</strong><br>
-      Notes are encrypted with AES-128 (Fernet) using a per-user key derived server-side.
+      Sign-in is handled by Firebase Authentication. Notes are encrypted with AES-128 (Fernet)
+      using a per-user key derived server-side, then stored in Firestore.
       The Vault is the only non-educational feature on CryptYourMind — for personal use only.
       Do not store highly sensitive secrets.
     </div>
 
   </div>
 </div>
+
+<form id="csrfHolder" style="display:none">{% csrf_token %}</form>
 {% endblock %}
 
 {% block extra_js %}
+{% if firebase_configured %}{{ firebase_web_config|json_script:"firebase-config" }}{% endif %}
 <script>
   const ACTIVE_TAB = '{{ active_tab }}';
+  const $ = id => document.getElementById(id);
 
   function switchTab(tab) {
-    ['login','signup'].forEach(t => {
-      document.getElementById(t + 'Tab').classList.toggle('active', t === tab);
-      document.getElementById(t + 'Panel').classList.toggle('active', t === tab);
+    ['login', 'signup'].forEach(t => {
+      $(t + 'Tab').classList.toggle('active', t === tab);
+      $(t + 'Tab').setAttribute('aria-selected', String(t === tab));
+      $(t + 'Panel').classList.toggle('active', t === tab);
     });
+    flash(null);
   }
-
-  // Boot to whichever tab Django told us (login default, signup on validation error redirect)
   switchTab(ACTIVE_TAB || 'login');
 
-  // Auto-dismiss alerts
-  document.querySelectorAll('.vault-alert').forEach(el => {
+  function flash(msg, kind) {
+    const box = $('flash');
+    box.innerHTML = '';
+    if (!msg) { box.style.display = 'none'; return; }
+    const d = document.createElement('div');
+    d.className = 'vault-alert vault-alert-' + (kind || 'error');
+    d.textContent = msg;
+    box.appendChild(d);
+    box.style.display = 'block';
+  }
+
+  // Auto-dismiss server-rendered alerts
+  document.querySelectorAll('#flash .vault-alert').forEach(el => {
     setTimeout(() => el.style.opacity = '0', 4000);
     setTimeout(() => el.remove(), 4500);
   });
+
+  const FRIENDLY = {
+    'auth/invalid-credential': 'Incorrect email or password.',
+    'auth/wrong-password': 'Incorrect email or password.',
+    'auth/user-not-found': 'Incorrect email or password.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/email-already-in-use': 'An account with this email already exists.',
+    'auth/weak-password': 'Password must be at least 8 characters.',
+    'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+    'auth/user-disabled': 'This account has been disabled.',
+    'auth/network-request-failed': 'Network error. Check your connection and try again.',
+    'auth/configuration-not-found': 'Sign-in is not enabled for this Firebase project yet (enable Email/Password in Firebase Authentication).',
+    'auth/operation-not-allowed': 'Email/Password sign-in is not enabled for this Firebase project yet.',
+  };
+  const friendly = e => FRIENDLY[e && e.code] || (e && e.message) || 'Something went wrong. Please try again.';
+
+  async function startSession(user, username) {
+    const idToken = await user.getIdToken(true);
+    const body = new URLSearchParams({ id_token: idToken, username: username || '' });
+    const res = await fetch('/vault/session', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': document.querySelector('#csrfHolder [name=csrfmiddlewaretoken]').value },
+      body,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Sign-in failed. Please try again.');
+    window.location.href = data.next;
+  }
+
+  function busy(form, on) {
+    const b = form.querySelector('button[type=submit]');
+    b.disabled = on;
+    b.dataset.label = b.dataset.label || b.textContent;
+    b.textContent = on ? 'Please wait…' : b.dataset.label;
+  }
+
+  {% if firebase_configured %}
+  (async () => {
+    const cfg = JSON.parse($('firebase-config').textContent);
+    const V = '10.14.1';
+    const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+    const A = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
+    const app = initializeApp(cfg);
+    // Firebase is only used to prove identity once; our server session takes over from there.
+    const auth = A.initializeAuth(app, { persistence: A.inMemoryPersistence });
+
+    $('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = e.currentTarget, email = f.email.value.trim(), pw = f.password.value;
+      if (!email || !pw) return flash('Enter your email and password.');
+      busy(f, true);
+      try {
+        const cred = await A.signInWithEmailAndPassword(auth, email, pw);
+        await startSession(cred.user);
+      } catch (err) { flash(friendly(err)); busy(f, false); }
+    });
+
+    $('signupForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = e.currentTarget;
+      const username = f.username.value.trim(), email = f.email.value.trim();
+      if (username.length < 3) return flash('Username must be 3–30 characters.');
+      if (f.password1.value.length < 8) return flash('Password must be at least 8 characters.');
+      if (f.password1.value !== f.password2.value) return flash('Passwords do not match.');
+      busy(f, true);
+      try {
+        const cred = await A.createUserWithEmailAndPassword(auth, email, f.password1.value);
+        await A.updateProfile(cred.user, { displayName: username });
+        await startSession(cred.user, username);
+      } catch (err) { flash(friendly(err)); busy(f, false); }
+    });
+
+    $('forgotBtn').addEventListener('click', async () => {
+      const email = $('login_email').value.trim();
+      if (!email) return flash('Enter your email above first, then click "Forgot password?".');
+      try {
+        await A.sendPasswordResetEmail(auth, email);
+      } catch (err) { if (err.code !== 'auth/user-not-found') return flash(friendly(err)); }
+      flash('If an account exists for that email, a reset link is on its way.', 'success');
+    });
+  })().catch(() => flash('Could not load Firebase. Check your connection and refresh.'));
+  {% else %}
+  ['loginForm', 'signupForm'].forEach(id => $(id).addEventListener('submit', e => {
+    e.preventDefault();
+    flash('Sign-in is unavailable until Firebase is configured.');
+  }));
+  {% endif %}
 </script>
 {% endblock %}

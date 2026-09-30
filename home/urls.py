@@ -12,15 +12,16 @@ urlpatterns = [
     path("tools",        views.tools,         name="tools"),
     path("encrypt_data", views.encrypt_data,  name="encrypt_data"),
 
-    # ── Vault: auth ───────────────────────────────────────────────────────────
-    path("vault",              views.vault,          name="vault"),
-    path("vault/login",        views.vault_login,    name="vault_login"),
-    path("vault/register",     views.vault_register, name="vault_register"),
-    path("vault/logout",       views.vault_logout,   name="vault_logout"),
+    # ── Vault (Firebase Auth + Firestore) ────────────────────────────────────
+    path("vault",                    views.vault,           name="vault"),
+    path("vault/session",            views.vault_session,   name="vault_session"),
+    path("vault/logout",             views.vault_logout,    name="vault_logout"),
+    path("vault/dashboard",          views.vault_dashboard, name="vault_dashboard"),
+    path("vault/create",             views.vault_create,    name="vault_create"),
+    path("vault/edit/<slug:eid>",    views.vault_edit,      name="vault_edit"),
+    path("vault/delete/<slug:eid>",  views.vault_delete,    name="vault_delete"),
 
-    # ── Vault: dashboard & CRUD ───────────────────────────────────────────────
-    path("vault/dashboard",         views.vault_dashboard, name="vault_dashboard"),
-    path("vault/create",            views.vault_create,    name="vault_create"),
-    path("vault/edit/<int:pk>",     views.vault_edit,      name="vault_edit"),
-    path("vault/delete/<int:pk>",   views.vault_delete,    name="vault_delete"),
+    # ── Admin panel (requires the Firebase `admin` custom claim) ─────────────
+    path("manage/",                  views.admin_panel,       name="admin_panel"),
+    path("manage/users/<str:uid>",   views.admin_user_action, name="admin_user_action"),
 ]

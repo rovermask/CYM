@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/stylesheet_vault.css">
+<link rel="stylesheet" href="/static/stylesheet_admin.css">
+{% endblock %}
+
+{% block header %}<div class="nav-spacer"></div>{% endblock %}
+
+{% block body %}
+<div class="adm-wrap">
+
+  <header class="adm-head">
+    <div>
+      <p class="section-label">// Administration</p>
+      <h1>Admin <span class="accent">Console</span></h1>
+      <p class="muted">Signed in as {{ user.email }}. Notes stay encrypted — only sizes and key IDs are shown here.</p>
+    </div>
+    <a href="/vault/dashboard" class="btn btn-outline">← My Vault</a>
+  </header>
+
+  {% for message in messages %}
+    <div class="vault-alert vault-alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+
+  <section class="adm-stats" aria-label="Summary">
+    <div class="adm-stat"><span class="adm-stat-n">{{ stats.total }}</span><span class="adm-stat-l">Users</span></div>
+    <div class="adm-stat"><span class="adm-stat-n">{{ stats.entries }}</span><span class="adm-stat-l">Vault entries</span></div>
+    <div class="adm-stat"><span class="adm-stat-n">{{ stats.disabled }}</span><span class="adm-stat-l">Disabled</span></div>
+    <div class="adm-stat"><span class="adm-stat-n">{{ stats.admins }}</span><span class="adm-stat-l">Admins</span></div>
+  </section>
+
+  <section class="adm-card">
+    <div class="adm-card-head">
+      <h2>Users</h2>
+      <form method="get" class="adm-search" role="search">
+        <input type="search" name="q" value="{{ q }}" placeholder="Search email or username…" aria-label="Search users">
+        <button class="btn btn-outline" type="submit">Search</button>
+        {% if q %}<a href="/manage/" class="btn btn-outline">Clear</a>{% endif %}
+      </form>
+    </div>
+
+    {% if users %}
+    <div class="table-scroll">
+      <table class="adm-table">
+        <thead>
+          <tr><th>User</th><th>Status</th><th>Entries</th><th>Key ID</th><th>Joined</th><th>Last sign-in</th><th class="adm-right">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>
+              <div class="adm-user">
+                <span class="adm-avatar">{{ u.username|default:u.email|first|upper }}</span>
+                <div>
+                  <div class="adm-name">{{ u.username|default:"—" }}</div>
+                  <div class="muted adm-email">{{ u.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              {% if u.disabled %}<span class="badge badge-red">Disabled</span>
+              {% else %}<span class="badge badge-green">Active</span>{% endif %}
+              {% if u.is_admin %}<span class="badge badge-blue">Admin</span>{% endif %}
+            </td>
+            <td>{{ u.entry_count }}</td>
+            <td><code>{{ u.key_id }}</code></td>
+            <td>{{ u.created_at|date:"M d, Y"|default:"—" }}</td>
+            <td>{{ u.last_login|date:"M d, Y H:i"|default:"Never" }}</td>
+            <td class="adm-right">
+              {% if u.uid != user.uid %}
+              <div class="adm-actions">
+                <form method="post" action="/manage/users/{{ u.uid }}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="{% if u.disabled %}enable{% else %}disable{% endif %}">
+                  <button class="adm-btn" type="submit">{% if u.disabled %}Enable{% else %}Disable{% endif %}</button>
+                </form>
+                <button class="adm-btn adm-btn-danger" type="button"
+                        data-delete="{{ u.uid }}" data-label="{{ u.email }}">Delete</button>
+              </div>
+              {% else %}<span class="muted">You</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="adm-empty">{% if q %}No users match “{{ q }}”.{% else %}No users have signed up yet.{% endif %}</p>
+    {% endif %}
+  </section>
+</div>
+
+<div class="vd-modal-overlay" id="delOverlay">
+  <div class="vd-modal vd-modal-sm" role="dialog" aria-modal="true" aria-labelledby="delTitle">
+    <div class="vd-modal-header">
+      <h3 id="delTitle">Delete user</h3>
+      <button type="button" class="vd-modal-close" id="delClose" aria-label="Close">✕</button>
+    </div>
+    <p id="delMsg" style="margin-bottom:1.5rem;"></p>
+    <form method="post" id="delForm">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="delete">
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <button type="submit" class="vault-btn vault-btn-danger">Delete permanently</button>
+        <button type="button" class="vault-btn vault-btn-outline" id="delCancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const ov = document.getElementById('delOverlay');
+  const close = () => { ov.classList.remove('active'); document.body.style.overflow = ''; };
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-delete]');
+    if (!b) return;
+    document.getElementById('delForm').action = '/manage/users/' + b.dataset.delete;
+    document.getElementById('delMsg').textContent =
+      'Permanently delete ' + b.dataset.label + ' and all of their encrypted vault entries? This cannot be undone.';
+    ov.classList.add('active'); document.body.style.overflow = 'hidden';
+  });
+  ov.addEventListener('click', e => { if (e.target === ov) close(); });
+  document.getElementById('delClose').addEventListener('click', close);
+  document.getElementById('delCancel').addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  document.querySelectorAll('.vault-alert').forEach(el => setTimeout(() => el.remove(), 5000));
+</script>
+{% endblock %}

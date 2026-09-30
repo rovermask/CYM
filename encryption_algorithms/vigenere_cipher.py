@@ -4,10 +4,10 @@ def vigenere_encrypt(plain_text, key):
     result = ""
     key_index = 0
     for char in plain_text:
-        if char.isalpha():
+        if ('A' <= char <= 'Z' or 'a' <= char <= 'z'):
             key_char = key[key_index % len(key)]
             shift = ord(key_char) - ord('A')
-            if char.isupper():
+            if 'A' <= char <= 'Z':
                 result += chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
             else:
                 result += chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
@@ -23,10 +23,10 @@ def vigenere_decrypt(cipher_text, key):
     result = ""
     key_index = 0
     for char in cipher_text:
-        if char.isalpha():
+        if ('A' <= char <= 'Z' or 'a' <= char <= 'z'):
             key_char = key[key_index % len(key)]
             shift = ord(key_char) - ord('A')
-            if char.isupper():
+            if 'A' <= char <= 'Z':
                 result += chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
             else:
                 result += chr((ord(char) - ord('a') - shift) % 26 + ord('a'))

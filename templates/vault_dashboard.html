@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block header %}
-<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+<div class="nav-spacer"></div>
 {% endblock %}
 
 {% block body %}
@@ -39,15 +39,15 @@
       <button class="vd-nav-btn" onclick="showPanel('new')">✏️ New Entry</button>
     </nav>
 
-    <div class="vd-encryption-notice">
-      <strong>🔐 Encrypted at rest</strong>
+    <details class="vd-encryption-notice" id="encNotice" open>
+      <summary>🔐 Encrypted at rest</summary>
       <p>
         Your notes are encrypted with AES-128 (Fernet) using a key derived
         server-side from your account. An admin with DB + server access could
         theoretically read them — suitable for a learning platform, not for
         storing highly sensitive secrets.
       </p>
-    </div>
+    </details>
 
     <form method="POST" action="/vault/logout" style="margin-top:auto;">
       {% csrf_token %}
@@ -58,7 +58,7 @@
   </aside>
 
   <!-- ── Main content ─────────────────────────────────────────────── -->
-  <main class="vd-main">
+  <div class="vd-main">
 
     {% if messages %}
       {% for message in messages %}
@@ -80,8 +80,10 @@
             <div class="vd-entry-header">
               <h4 class="vd-entry-title">{{ entry.title }}</h4>
               <div class="vd-entry-actions">
-                <button class="vd-icon-btn" title="Edit" onclick="openEditModal({{ entry.id }}, '{{ entry.title|escapejs }}', `{{ entry.content|escapejs }}`)">✏️</button>
-                <button class="vd-icon-btn vd-icon-btn-danger" title="Delete" onclick="confirmDelete({{ entry.id }}, '{{ entry.title|escapejs }}')">🗑️</button>
+                <button type="button" class="vd-icon-btn" title="Edit entry" aria-label="Edit {{ entry.title }}"
+                        data-action="edit" data-id="{{ entry.id }}">✏️</button>
+                <button type="button" class="vd-icon-btn vd-icon-btn-danger" title="Delete entry" aria-label="Delete {{ entry.title }}"
+                        data-action="delete" data-id="{{ entry.id }}">🗑️</button>
               </div>
             </div>
             <p class="vd-entry-preview">{{ entry.preview }}</p>
@@ -128,7 +130,7 @@
       </form>
     </div>
 
-  </main>
+  </div>
 </div>
 
 <!-- ── Edit modal ──────────────────────────────────────────────── -->
@@ -177,7 +179,11 @@
 {% endblock %}
 
 {% block extra_js %}
+{{ entries_json|json_script:"entries-data" }}
 <script>
+// Collapse the encryption notice on small screens to keep entries above the fold
+if (window.matchMedia('(max-width: 700px)').matches) document.getElementById('encNotice').open = false;
+
 // Panel switching
 function showPanel(id) {
   document.querySelectorAll('.vd-panel').forEach(p => p.classList.remove('active'));
@@ -200,12 +206,24 @@ bindCounter('new-content', 'new-char-count');
 bindCounter('edit-content', 'edit-char-count');
 
 // Edit modal
+const ENTRIES = Object.fromEntries(JSON.parse(document.getElementById('entries-data').textContent).map(e => [e.id, e]));
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const entry = ENTRIES[btn.dataset.id];
+  if (!entry) return;
+  if (btn.dataset.action === 'edit') openEditModal(entry.id, entry.title, entry.content);
+  else confirmDelete(entry.id, entry.title);
+});
+
 function openEditModal(id, title, content) {
   document.getElementById('editForm').action = '/vault/edit/' + id;
   document.getElementById('edit-title').value = title;
   document.getElementById('edit-content').value = content;
   document.getElementById('edit-char-count').textContent = content.length;
   document.getElementById('editModalOverlay').classList.add('active');
+  document.getElementById('edit-title').focus();
   document.body.style.overflow = 'hidden';
 }
 function closeEditModal() {

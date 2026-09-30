@@ -3,27 +3,28 @@ def atbash_cipher(text):
     Atbash cipher: reverses the alphabet.
     A->Z, B->Y, C->X ... Z->A (symmetric — same function encrypts and decrypts)
     """
-    result = ""
-    for char in text:
-        if char.isupper():
-            result += chr(ord('Z') - (ord(char) - ord('A')))
-        elif char.islower():
-            result += chr(ord('z') - (ord(char) - ord('a')))
+    result = []
+    for ch in text:
+        if 'A' <= ch <= 'Z':
+            result.append(chr(ord('Z') - (ord(ch) - ord('A'))))
+        elif 'a' <= ch <= 'z':
+            result.append(chr(ord('z') - (ord(ch) - ord('a'))))
         else:
-            result += char
-    return result
+            result.append(ch)
+    return ''.join(result)
 
 
 def rot13(text):
     """ROT13 — special case of Caesar cipher with shift 13 (self-inverse)."""
-    result = ""
-    for char in text:
-        if char.isalpha():
-            base = ord('A') if char.isupper() else ord('a')
-            result += chr((ord(char) - base + 13) % 26 + base)
+    result = []
+    for ch in text:
+        if 'A' <= ch <= 'Z':
+            result.append(chr((ord(ch) - 65 + 13) % 26 + 65))
+        elif 'a' <= ch <= 'z':
+            result.append(chr((ord(ch) - 97 + 13) % 26 + 97))
         else:
-            result += char
-    return result
+            result.append(ch)
+    return ''.join(result)
 
 
 if __name__ == "__main__":

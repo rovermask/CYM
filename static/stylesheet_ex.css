@@ -73,7 +73,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
-  background: rgba(0,220,160,0.03);
+  background: rgba(var(--accent-rgb), 0.03);
   border-bottom: 1px solid var(--border);
 }
 .ex-card-header h3 { margin: 0 0 0.4rem; font-size: 1.1rem; }
@@ -129,7 +129,7 @@
   padding: 0;
   color: var(--text-bright);
 }
-.ex-io-cipher { border-color: rgba(0,220,160,0.3); background: rgba(0,220,160,0.04); }
+.ex-io-cipher { border-color: rgba(var(--accent-rgb), 0.3); background: rgba(var(--accent-rgb), 0.04); }
 .ex-io-cipher code { color: var(--accent); }
 .ex-io-arrow {
   font-size: 1.4rem;
@@ -158,7 +158,7 @@
   height: 24px;
   border-radius: 50%;
   background: var(--accent-dim);
-  border: 1px solid rgba(0,220,160,0.3);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -179,3 +179,9 @@
   .ex-io-box:nth-child(4) { grid-column: auto; }
   .ex-wrap { padding: 1.5rem 1.25rem 3rem; }
 }
+/* ── Overflow safety ───────────────────────── */
+.ex-io-box, .ex-io-grid > * { min-width: 0; }
+.ex-io-box code { overflow-wrap: anywhere; display: block; }
+.ex-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.ex-tab { white-space: nowrap; flex-shrink: 0; }
+.ex-card pre, .ex-card-body pre { overflow-x: auto; max-width: 100%; }

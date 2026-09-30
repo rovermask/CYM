@@ -85,7 +85,7 @@
 }
 .about-stat-card:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 0 20px rgba(0,220,160,0.07);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.07);
 }
 .about-stat-number {
   display: block;
@@ -121,7 +121,7 @@
 .feature-card:hover {
   border-color: var(--border-hover);
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px var(--input-bg);
 }
 .feature-icon {
   font-size: 2rem;
@@ -138,15 +138,6 @@
   flex: 1;
   margin-bottom: 1rem;
 }
-.feature-link {
-  font-size: 0.83rem;
-  font-family: var(--font-mono);
-  color: var(--accent);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.feature-link:hover { color: var(--accent-2); }
 
 /* ── Motto grid ────────────────────────────── */
 .motto-grid {
@@ -165,7 +156,7 @@
 }
 .motto-card:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 0 20px rgba(0,220,160,0.07);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.07);
 }
 .motto-number {
   font-family: var(--font-display);

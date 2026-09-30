@@ -1,0 +1,11 @@
+.venv/
+.git/
+.env
+.env.*
+!.env.example
+*serviceAccount*.json
+*.sqlite3
+__pycache__/
+*.pyc
+staticfiles/
+.claude/

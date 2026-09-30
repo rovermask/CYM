@@ -2,7 +2,7 @@
 
 .docs-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 220px minmax(0, 1fr);
   min-height: 100vh;
   position: relative;
   z-index: 1;
@@ -40,7 +40,7 @@
 .docs-sidebar a.active {
   color: var(--accent);
   border-left-color: var(--accent);
-  background: rgba(0,220,160,0.05);
+  background: rgba(var(--accent-rgb), 0.05);
 }
 .docs-sidebar .sub-link {
   padding-left: 2.25rem;
@@ -52,7 +52,6 @@
 .docs-content {
   padding: 2.5rem 3rem 4rem;
   max-width: 860px;
-  margin-top: 64px;
 }
 
 /* Page header */
@@ -104,7 +103,7 @@
   flex-wrap: wrap;
   margin: 1.25rem 0;
   padding: 1rem;
-  background: rgba(0,0,0,0.2);
+  background: var(--input-bg);
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
@@ -118,6 +117,7 @@
   margin-bottom: 0.2rem;
 }
 .algo-stat value {
+  display: block;
   font-family: var(--font-mono);
   font-size: 0.92rem;
   color: var(--accent);
@@ -136,7 +136,7 @@
   position: relative;
   color: var(--text);
   font-size: 0.95rem;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--hover-bg);
 }
 .algo-steps li::before {
   content: counter(step, decimal-leading-zero);
@@ -187,7 +187,7 @@
 
 /* Responsive */
 @media (max-width: 900px) {
-  .docs-layout { grid-template-columns: 1fr; }
+  .docs-layout { grid-template-columns: minmax(0, 1fr); }
   .docs-sidebar {
     position: static;
     height: auto;

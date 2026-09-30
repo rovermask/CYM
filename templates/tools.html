@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block header %}
-<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+<div class="nav-spacer"></div>
 {% endblock %}
 
 {% block body %}
@@ -16,16 +16,27 @@
   <div class="tools-header">
     <p class="section-label">// Interactive Playground</p>
     <h1>Encryption <span style="color:var(--accent)">Tools</span></h1>
-    <p>Enter plaintext, choose an algorithm, and see the ciphertext output instantly.</p>
+    <p>Enter text, choose an algorithm, and encrypt or decrypt it instantly.</p>
   </div>
 
   <div class="tool-card">
-    <form method="POST" action="/encrypt_data" id="toolForm">
+    <form method="POST" action="/encrypt_data" id="toolForm" novalidate>
       {% csrf_token %}
+
+      <div class="mode-switch" role="radiogroup" aria-label="Mode">
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="encrypt" {% if mode != 'decrypt' %}checked{% endif %}>
+          <span>🔒 Encrypt</span>
+        </label>
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="decrypt" {% if mode == 'decrypt' %}checked{% endif %}>
+          <span>🔓 Decrypt</span>
+        </label>
+      </div>
 
       <div class="form-row">
         <div class="form-group" style="grid-column:1/-1;">
-          <label for="plain_text">Plaintext</label>
+          <label for="plain_text" id="inputLabel">Plaintext</label>
           <textarea name="plain_text" id="plain_text" placeholder="Enter the text you want to encrypt..."
             required>{{ plain_text }}</textarea>
         </div>
@@ -35,7 +46,7 @@
         <div class="form-group">
           <label for="algorithm">Algorithm</label>
           <div class="algo-select-wrapper">
-            <select name="algorithm" id="algorithm" onchange="updateKeyHint(this.value)" required>
+            <select name="algorithm" id="algorithm" required>
               <option value="0">— Choose Algorithm —</option>
               <optgroup label="Classical / Symmetric">
                 <option value="1" {% if algorithm == '1' %}selected{% endif %}>Caesar Cipher</option>
@@ -53,48 +64,34 @@
 
         <div class="form-group" id="keyGroup">
           <label for="key">Key</label>
-          <input type="text" name="key" id="key"
+          <input type="text" name="key" id="key" autocomplete="off"
             placeholder="Enter key..." value="{{ key }}">
           <span class="key-hint" id="keyHint">Select an algorithm to see key requirements.</span>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary" id="submitBtn">
-          Encrypt →
-        </button>
-        <button type="button" class="btn btn-outline" onclick="clearForm()">Clear</button>
-        <span style="margin-left:auto;font-family:var(--font-mono);font-size:0.8rem;color:var(--text-muted);">
-          For educational use only
-        </span>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Encrypt →</button>
+        <button type="button" class="btn btn-outline" id="clearBtn">Clear</button>
+        <button type="button" class="btn btn-outline" id="swapBtn" title="Use the result as the new input and flip the mode">⇅ Use result as input</button>
+        <span class="tool-note">For educational use only</span>
       </div>
 
-      {% if error %}
-      <div class="error-box">⚠ {{ error }}</div>
-      {% endif %}
+      <div class="error-box{% if not error %} hidden{% endif %}" id="errorBox" role="alert">{% if error %}⚠ {{ error }}{% endif %}</div>
 
-      {% if result_text %}
-      <div class="result-area" id="resultArea">
-        <div class="result-label">{{ result_label }}</div>
-        <div class="result-box" id="resultBox">
-          {{ result_text }}
-          <button class="copy-btn" onclick="copyResult(event)">Copy</button>
+      <div class="result-area{% if not result_text %} hidden{% endif %}" id="resultArea" aria-live="polite">
+        <div class="result-label" id="resultLabel">{{ result_label|default:"" }}</div>
+        <div class="result-box">
+          <span id="resultText">{{ result_text|default:"" }}</span>
+          <button type="button" class="copy-btn" id="copyBtn">Copy</button>
         </div>
       </div>
-      {% else %}
-      <div class="result-area hidden" id="resultArea">
-        <div class="result-label" id="resultLabel"></div>
-        <div class="result-box" id="resultBox"></div>
-      </div>
-      {% endif %}
 
     </form>
   </div>
 
   <!-- Algorithm Info Cards -->
-  <h3 style="margin:2.5rem 0 1rem;color:var(--text-muted);font-size:1rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.1em;">
-    Available Algorithms
-  </h3>
+  <h3 class="tools-subhead">Available Algorithms</h3>
   <div class="algo-info-grid">
     <div class="algo-info-card">
       <div class="algo-type">Classical · Symmetric</div>
@@ -136,54 +133,95 @@
 const KEY_HINTS = {
   '0': 'Select an algorithm to see key requirements.',
   '1': 'Integer shift value (e.g. 3 shifts A→D, B→E). Negative values shift backwards.',
-  '2': 'No key needed — demo uses fixed primes p=53, q=59.',
-  '3': 'No key needed — vowels and consonants are swapped within their groups.',
+  '2': 'No key needed — demo uses fixed primes p=53, q=59. To decrypt, paste space-separated numbers.',
+  '3': 'No key needed — vowels and consonants are swapped within their groups (self-inverse).',
   '4': 'Alphabetic keyword (e.g. SECRET). Letters only, no spaces.',
   '5': 'No key needed — Atbash is self-inverse (A↔Z, B↔Y...).',
-  '6': 'No key needed — ROT13 always shifts by 13.',
+  '6': 'No key needed — ROT13 always shifts by 13 (self-inverse).',
 };
 const NO_KEY_ALGOS = ['2', '3', '5', '6'];
 
-function updateKeyHint(val) {
-  document.getElementById('keyHint').textContent = KEY_HINTS[val] || '';
-  const keyInput = document.getElementById('key');
-  const keyGroup = document.getElementById('keyGroup');
-  if (NO_KEY_ALGOS.includes(val)) {
-    keyInput.disabled = true;
-    keyInput.placeholder = 'No key required';
-    keyInput.value = '';
-    keyGroup.style.opacity = '0.4';
-  } else {
-    keyInput.disabled = false;
-    keyInput.placeholder = 'Enter key...';
-    keyGroup.style.opacity = '1';
-  }
+const $ = id => document.getElementById(id);
+const form = $('toolForm'), algoSel = $('algorithm'), keyInput = $('key'), keyGroup = $('keyGroup');
+const resultArea = $('resultArea'), errorBox = $('errorBox');
+const getMode = () => form.querySelector('input[name="mode"]:checked').value;
+
+function refresh() {
+  const val = algoSel.value, dec = getMode() === 'decrypt';
+  $('keyHint').textContent = KEY_HINTS[val] || '';
+  const noKey = NO_KEY_ALGOS.includes(val);
+  keyInput.disabled = noKey;
+  keyInput.placeholder = noKey ? 'No key required' : 'Enter key...';
+  if (noKey) keyInput.value = '';
+  keyGroup.classList.toggle('is-disabled', noKey);
+  $('inputLabel').textContent = dec ? 'Ciphertext' : 'Plaintext';
+  $('plain_text').placeholder = dec ? 'Paste the ciphertext to decrypt...' : 'Enter the text you want to encrypt...';
+  $('submitBtn').textContent = dec ? 'Decrypt →' : 'Encrypt →';
 }
 
-function clearForm() {
-  document.getElementById('plain_text').value = '';
-  document.getElementById('key').value = '';
-  document.getElementById('algorithm').value = '0';
-  document.getElementById('keyHint').textContent = KEY_HINTS['0'];
-  document.getElementById('key').disabled = false;
-  document.getElementById('keyGroup').style.opacity = '1';
-  document.getElementById('resultArea').classList.add('hidden');
+function showError(msg) {
+  resultArea.classList.add('hidden');
+  errorBox.textContent = '⚠ ' + msg;
+  errorBox.classList.remove('hidden');
+}
+function showResult(label, text) {
+  errorBox.classList.add('hidden');
+  $('resultLabel').textContent = label;
+  $('resultText').textContent = text;
+  resultArea.classList.remove('hidden');
 }
 
-function copyResult(e) {
+algoSel.addEventListener('change', refresh);
+form.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', refresh));
+
+// Submit via fetch for a seamless experience (falls back to a normal POST if JS fails)
+form.addEventListener('submit', async e => {
   e.preventDefault();
-  const text = document.getElementById('resultBox').textContent.replace('Copy', '').trim();
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = e.target;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 1500);
-  });
-}
-
-// Init on page load if algorithm is pre-selected
-window.addEventListener('DOMContentLoaded', () => {
-  const algo = document.getElementById('algorithm').value;
-  if (algo !== '0') updateKeyHint(algo);
+  const btn = $('submitBtn'), original = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Working…';
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: new FormData(form),
+    });
+    const data = await res.json();
+    if (data.ok) showResult(data.label, data.result); else showError(data.error || 'Something went wrong.');
+  } catch (err) {
+    showError('Could not reach the server. Please try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = original;
+  }
 });
+
+$('clearBtn').addEventListener('click', () => {
+  $('plain_text').value = ''; keyInput.value = '';
+  algoSel.value = '0';
+  resultArea.classList.add('hidden'); errorBox.classList.add('hidden');
+  refresh();
+});
+
+$('swapBtn').addEventListener('click', () => {
+  const text = $('resultText').textContent;
+  if (!text || resultArea.classList.contains('hidden')) return;
+  $('plain_text').value = text;
+  const next = getMode() === 'encrypt' ? 'decrypt' : 'encrypt';
+  form.querySelector('input[value="' + next + '"]').checked = true;
+  refresh();
+  $('plain_text').focus();
+});
+
+$('copyBtn').addEventListener('click', async e => {
+  const btn = e.currentTarget;
+  try {
+    await navigator.clipboard.writeText($('resultText').textContent);
+    btn.textContent = 'Copied!';
+  } catch (err) {
+    btn.textContent = 'Press Ctrl+C';
+  }
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+
+refresh();
 </script>
 {% endblock %}

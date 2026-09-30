@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block header %}
-<div style="height:64px;background:var(--bg-surface);border-bottom:1px solid var(--border);"></div>
+<div class="nav-spacer"></div>
 {% endblock %}
 
 {% block body %}
@@ -71,7 +71,7 @@
   <hr class="divider" style="margin:3rem 0;">
 
   <h2 style="margin-bottom:1.5rem;">Quick Reference</h2>
-  <table>
+  <div class="table-scroll"><table>
     <thead>
       <tr>
         <th>Algorithm</th>
@@ -91,6 +91,6 @@
       <tr><td>DES</td><td>Symmetric</td><td>56 bits</td><td><span class="badge badge-red">Broken</span></td><td>Education only</td></tr>
       <tr><td>RC4</td><td>Symmetric</td><td>Variable</td><td><span class="badge badge-red">Prohibited</span></td><td>Education only</td></tr>
     </tbody>
-  </table>
+  </table></div>
 </div>
 {% endblock %}
